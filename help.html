@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="(C)hinacoppy 2019-2025">
+<link rel="icon" href="icon/favicon.ico">
+<link rel="apple-touch-icon" href="icon/apple-touch-icon.png">
+<style>
+body{
+  padding:10px;
+  background-color:#efe;
+}
+.contents{
+  padding-left:20px;
+}
+h1 img{
+  vertical-align:middle;
+  width:48px;
+}
+a {
+  text-decoration:none;
+}
+.aslink{
+  color:#00f;
+  cursor:pointer;
+  font-size:small;
+}
+</style>
+<title>BgKifuEditor help</title>
+</head>
+<body>
+<h1><img src="icon/apple-touch-icon.png"> Backgammon Kifu Viewer/Editor</h1>
+
+<h3>◆このアプリは何？</h3>
+
+<p class="contents">
+バックギャモンの棋譜からゲームを再生したり、棋譜を入力、編集するためのアプリです。<br>
+以前に、棋譜からゲームを再生するアプリ、棋譜を最初から入力するアプリ、棋譜を編集するアプリ、の３つのアプリを提供していました。<br>
+これらのアプリを一つに統合し、再生・入力・編集ができるアプリとして提供しています。<br><br>
+
+マウス操作ができるパソコンで稼働させてください。スマホやタブレットなどのタッチデバイスでも動きますが、正常に動かない可能性があります。<br>
+</p>
+
+<h3>◆何ができるの？</h3>
+
+<p class="contents">
+・棋譜ビューアとして：バックギャモンの棋譜ファイルを読み込ませ、ゲームの進行をアニメーションで表示できます。<br>
+・棋譜入力アプリとして：ダイスの出目から、バックギャモンボードでの操作で棋譜入力ができます。<br>
+&emsp;&emsp;&emsp;→ビデオ等で撮影した動画から棋譜起こしをすることを想定したアプリです。<br>
+・棋譜エディタとして：棋譜ファイルを読み込ませ、その棋譜の一部分を編集することができます。<br>
+&emsp;&emsp;&emsp;→kifu.me が出力したバックギャモンの棋譜ファイルを編集することを想定したアプリです。<br>
+</p>
+
+<h3>◆どうやって使うの？</h3>
+
+<h4>(1) 棋譜ビューアとして使う</h4>
+<p class="contents">
+・[Game Info Panel] の <button>Select File</button> のボタンから棋譜ファイルを読み込ませます。<br>
+&emsp;&emsp;→ここに棋譜ファイルをドラッグ＆ドロップすることもできます。<br>
+・<select><option>Game 1</option></select><button><i class="fas fa-share"></i></button>でゲーム番号を選択し、そのゲームの棋譜を棋譜テーブルに表示します。<br>
+・棋譜テーブルの行を選択すると、そのポジションをボードに表示します。<br>
+・<button><i class="fas fa-angle-left"></i><button><i class="fas fa-angle-right"></i></button>で手番を動かし、ポジションをボードに表示しますす。<br>
+・<button><i class="fas fa-play-circle"></i></button> 棋譜を自動再生します。何らかのアクションで自動再生は停止します。<br>
+・<button><i class="fas fa-arrows-alt-h"></i> Flip Bearoff Side</button>ボードの左右を反転することができます。<br>
+</p>
+
+<h4>(2) 棋譜入力アプリとして使う</h4>
+<p class="contents">
+・[Game Info Panel] の <button><i class="fas fa-check"></i> Input New Game</button> を押下すると新規の棋譜入力ができるエディタモードになります。<br>
+&emsp;&emsp;→エディタモードでの操作方法は、下記の「◆エディタモードでの操作方法」を参照してください。<br>
+・[<input type="checkbox" checked>New Match Flag] がチェックされているときは新規として、チェックされていないときは継続ゲームとして入力できます。<br>
+</p>
+
+<h4>(3) 棋譜エディタとして使う</h4>
+<p class="contents">
+・[Game Info Panel] の <button>Select File</button> のボタンから kifu.me が出力した棋譜ファイルを読み込ませます。<br>
+・棋譜テーブルの<button>Edit</button>を押下するとその局面からのエディタモードになります。<br>
+・[<input type="checkbox" checked>Toggle Insert/Delete Button] にチェックを入れると<button>Ins</button><button>Del</button>が表示されます。<br>
+&emsp;<button>Ins</button>を押下するとその下に2行の棋譜行が追加されます。<br>
+&emsp;<button>Del</button>を押下するとその行と次の行の2行が削除されます。<br>
+&emsp;&emsp;→kifu.me が手番を入れ損ねていたり、入れすぎていた時に使用してください。
+</p>
+
+<h4>(4) 棋譜ダウンロード</h4>
+<p class="contents">
+・<button><i class="fas fa-download"></i> Download Kifu</button>を押下すると編集後の棋譜をダウンロードできます。<br>
+&emsp;&emsp;→ダウンロードした棋譜ファイルはMAT形式のテキストファイルです。<br>
+</p>
+
+<h4>(5) 補足</h4>
+<p class="contents">
+・[Action Panel] [Navigation Panel] [Game Info Panel] はドラッグで動かすことができます。使いやすい場所に移動してください。<br>
+</p>
+
+<h3>◆エディタモードでの操作方法</h3>
+
+<h4>(1) 準備</h4>
+<p class="contents">
+・[Game Info Panel] の対戦者の名前、マッチポイント数、イベント名、イベント日を入力します。<br>
+&emsp;&emsp;→これらの情報は棋譜ファイルにコメントとして記述されます。<br>
+&emsp;&emsp;→マッチポイント数を 0 にすると Unlimited game になります。<br>
+&emsp;&emsp;→棋譜データを読み込ませたときは棋譜データに書かれている情報が転記されます。<br>
+</p>
+
+<h4>(2) 棋譜入力</h4>
+<p class="contents">
+・ダイス一覧が表示され、出目を選択します。<br>
+&emsp;&emsp;→オープニングロールでは選択するダイスの色で先攻・後攻を選びます。<br>
+&emsp;&emsp;→この画面ではキーボードの 123456 と d の入力を受付けます。<br>
+・マウス操作でチェッカーを動かすことができます。<br>
+&emsp;&emsp;→チェッカーはドラッグ＆ドロップとクリックのどちらでも操作することができます。<br>
+・<button><i class="fas fa-check-circle"></i> Done</button>ボタンを押下するとチェッカー操作を終えます。<br>
+&emsp;&emsp;→ダイス部分の左クリックで<button><i class="fas fa-check-circle"></i> Done</button>と同じ機能が動きます。<br>
+・<button><i class="fas fa-undo"></i> Undo</button>ボタンを押下するとチェッカー操作をやり直すことができます。<br>
+&emsp;&emsp;→ダイス部分の右クリックで<button><i class="fas fa-undo"></i> Undo</button>と同じ機能が動きます。<br>
+・<button><i class="fas fa-check-circle"></i> Done</button><button><i class="fas fa-undo"></i> Undo</button>の画面ではキーボードの Enter, Space と Esc を受付けます。<br>
+&emsp;&emsp;→ Enter, Space は<button><i class="fas fa-check-circle"></i> Done</button>の機能として、Esc は<button><i class="fas fa-undo"></i> Undo</button>の機能として動きます。<br>
+・<button><i class="fas fa-dragon"></i> Forced</button>が押せるときはキーボードの f を受付けます。<br>
+</p>
+
+<h4>(3) ダブリング操作</h4>
+<p class="contents">
+・ダイス一覧画面の<button><i class="fas fa-dice-d6"></i> Double</button>を押下するとダブル提案です。<br>
+・ダブルを受けた側は<button><i class="fas fa-thumbs-up"></i> Take</button><button><i class="fas fa-thumbs-down"></i> Pass</button>のいずれかを押下します。<br>
+&emsp;&emsp;→<button><i class="fas fa-thumbs-up"></i> Take</button>のときは棋譜入力を継続します。<br>
+&emsp;&emsp;→<button><i class="fas fa-thumbs-down"></i> Pass</button>のときはゲーム終了画面が表示されます。<br>
+&emsp;&emsp;→<button><i class="fas fa-thumbs-up"></i> Take</button><button><i class="fas fa-thumbs-down"></i> Pass</button>の画面ではキーボードの t と p を受付けます。<br>
+</p>
+
+<h4>(4) リザイン</h4>
+<p class="contents">
+・ダイス一覧画面の<button><i class="fas fa-flag"></i> Resign</button>を押下するとリザイン(負け宣言)です。<br>
+&emsp;&emsp;→本当にリザインするかどうかを<button><i class="fas fa-check-circle"></i> OK</button><button><i class="fas fa-times"></i> Cancel</button>で決定します。<br>
+&emsp;&emsp;→<button><i class="fas fa-check-circle"></i> OK</button>を押下するとゲーム終了です。<br>
+&emsp;&emsp;→リザイン時の得点は選択してください。<br>
+</p>
+
+<h4>(5) イリーガルムーブ</h4>
+<p class="contents">
+・[<input type="checkbox" checked>Allow input of illegal moves] にチェックするとイリーガルムーブの入力ができるようになります。<br>
+&emsp;&emsp;→掴んだチェッカーより前方のマスであればどこにでもムーブすることができます。<br>
+&emsp;&emsp;→この状態ではチェッカーをドラッグ＆ドロップで操作します。<br>
+・イリーガルムーブがある棋譜データを XG に読み込ませると怒られますので、イリーガルにならないように出目操作などで調整した方がいいです。<br>
+</p>
+
+<h4>(6) 手順戻し</h4>
+<p class="contents">
+・入力ミスに気づいて入力し直したいときは、戻したい局面の棋譜テーブルの<button>Edit</button>を押下し、その局面から再入力してください。<br>
+</p>
+
+<h3>◆分かっている（仕様という名の）問題点</h3>
+
+<p class="contents">
+・ダウンロードした棋譜ファイルにXGIDのポジションデータも出力される<br>
+・ゲーム選択、棋譜データ参照ごとに棋譜テーブルが横に広がっていくバグを修正したけど、まだ微妙な動きをすることがある<br>
+・棋譜行を追加・削除した際に、行番号が再計算されてしまう<br>
+</p>
+
+<h3>◆機能拡張履歴</h3>
+
+<p class="contents">
+(2019/08/09) 棋譜ビューアのリリース<br>
+(2023/05/18) 棋譜入力アプリの初版リリース&emsp;<span onclick="showEnhancement1();" class="aslink">履歴</span><br>
+(2025/05/22) 棋譜エディタのとりあえず版リリース&emsp;<span onclick="showEnhancement2();" class="aslink">履歴</span><br>
+(2025/10/01) 棋譜ビューア、棋譜入力アプリ、棋譜エディタを統合<br>
+</p>
+
+<h3>◆追加するかもしれない機能</h3>
+
+<p class="contents">
+・棋譜行を追加・削除した際に、行番号を保持するようにしたい<br>
+・求む、機能改善要望<br>
+</p>
+
+<h3>◆Thanks to ...</h3>
+
+<p class="contents">
+・BG Replay という棋譜からゲーム局面を再生するアプリにインスパイアされ、棋譜ビューアを開発しました。<br>
+・棋譜入力アプリの開発および機能拡張に、犬さん、othelloさん、shiraさん、85yagoさんからの多大なご支援をいただきました。<br>
+・kifu.me という素晴らしいシステムに少しでも貢献できればと思い、棋譜エディタを開発しました。<br>
+</p>
+
+<h3>◆その他</h3>
+
+<p class="contents">
+とりあえず動いてはいますが、バグはまだまだあります。<br>
+こんな変な動きをしたよ、というバグ報告をお願いいたします。<br><br>
+mailto : kawakami あっと js4.so-net.ne.jp<br>
+<br>
+(C)hinacoppy 2025
+</p>
+
+<script src="/js/fontawesome-inuse.min.js"></script>
+<script>
+function showEnhancement1() {
+  const msg = `\
+(2023/05/18) 初版リリース
+(2023/05/19) クローズアウト時の Dance ボタンを実装
+(2023/05/20) 画面内に棋譜履歴を表示するよう機能拡張
+(2023/05/21) Begin New Match 押下時に確認ダイアログを表示。意図しない押下で悲しい思い(入力中の棋譜が消失)をしないように
+(2023/05/22) チェッカーではなく、三角形のマスの部分をクリックしてもムーブできるよう機能拡張
+(2023/05/26) フォーストムーブで自動的にチェッカーを動かす Forced ボタンを実装
+(2023/06/01) 右クリックのときはダイスの小さい目を先に使うよう機能拡張
+(2023/12/22) ブロックポイントをワンクリックで作れるよう機能拡張 (the same as Galaxy and Heroes)
+(2024/04/26) Unlimited game に対応
+(2024/05/16) 画面レイアウトを大幅変更。同じ画面に動画を表示したときの棋譜入力の操作性向上を目的として
+(2025/04/14) ヒットとベアオフが同時に発生した際に不正な棋譜が出力されるバグを改修`;
+
+  alert(msg);
+}
+function showEnhancement2() {
+  const msg = `\
+(2025/05/17) アルファ版リリース
+(2025/05/21) ベータ版リリース
+(2025/05/22) ドラッグ＆ドロップで棋譜ファイルを登録する機能を追加
+(2025/05/30) ゲーム選択、棋譜データ参照ごとに棋譜テーブルが横に広がっていくバグを修正
+(2025/06/09) スコアに影響するような編集をしたとき、後続のゲームのスコアに正しく反映するように改修
+(2025/06/17) 選択行が棋譜テーブル内に常に表示するように改修
+(2025/06/17) 棋譜ビューアモードでチェッカーとキューブをアニメーションするように機能追加
+(2025/09/19) 棋譜行の追加・削除ができる機能を追加
+(2025/09/19) 行番号の表示を kifu.me に合わせるように修正`;
+
+  alert(msg);
+}
+</script>
+</body>
+</html>

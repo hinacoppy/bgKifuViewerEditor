@@ -1,0 +1,96 @@
+5 point match
+
+ Game 1
+ izmiiinu : 0                           hinacoppy : 0
+  1)                                    32: 13/11 13/10
+  2) 61: 13/7 8/7                       32: 24/21 13/11
+  3) 62: 13/7 6/4*                      61: Bar/24 10/4
+  4) 63: 24/21* 21/15                   43: Bar/21* 13/10*
+  5) 43: Bar/22 Bar/21                  53: 8/3* 6/3
+  6) 33: Cannot Move                    65: 11/5 10/5
+  7) 41: Bar/21 13/12*                  61: Bar/24 11/5
+  8) 22: 7/5(2) 6/4*(2)                 32: Bar/22 24/22
+  9)  Doubles => 2                       Takes
+ 10) 53: 24/21 12/7                     54: 6/1 5/1
+ 11) 61: 21/14                          43: 8/1
+ 12) 43: 21/18 21/17*                   62: Bar/23 22/16
+ 13) 32: 14/9*                          51: Bar/24 6/1
+ 14) 64: 13/3*                          64: Cannot Move
+ 15) 22: 7/3 4/2*(2)                    56: Cannot Move
+ 16) 41: 17/12                          21: Cannot Move
+ 17) 65: 13/8 12/6                      36: Cannot Move
+ 18) 42: 8/4 6/4                        55: Cannot Move
+ 19) 22: 8/6 8/4 7/5                    54: Cannot Move
+ 20) 61: 18/12 9/8                      55: Cannot Move
+ 21) 21: 8/5                            24: Cannot Move
+ 22) 65: 12/6 5/Off                     53: Cannot Move
+ 23) 61: 6/5 6/Off                      54: Cannot Move
+ 24) 54: 5/Off 4/Off                    52: Cannot Move
+ 25) 55: 5/Off(3)                       31: Bar/24
+ 26) 64: 6/2 6/Off                      63: Bar/16
+ 27) 31: 3/2 3/Off                      31: 16/12
+ 28) 44: 4/Off(2) 2/Off(2)              32: 24/19
+ 29) 21: 2/Off                           Doubles => 4
+ 30)  Drops
+ 31)                                     Wins 2 point
+
+; XGID=-b----E-C---eE---c-e----B-:0:0:1:32:0:0:0:5:0
+; XGID=-b----E-C-AAeC---c-e----B-:0:0:-1:61:0:0:0:5:0
+; XGID=-b----E-C-AAdC---bbe----B-:0:0:1:32:0:0:0:5:0
+; XGID=-b----E-C-ABdB---bbe-A--A-:0:0:-1:62:0:0:0:5:0
+; XGID=-b----E-C-ABcB---bcd-a--AA:0:0:1:61:0:0:0:5:0
+; XGID=-b--A-E-C--BcB---bcd-a--B-:0:0:-1:63:0:0:0:5:0
+; XGID=-a----E-C-aBcB---bcd-a--BA:0:0:1:43:0:0:0:5:0
+; XGID=ba----E-C-ABcA---bcd-A--B-:0:0:-1:43:0:0:0:5:0
+; XGID=-a-aa-E-C-ABcA---bcd-A--B-:0:0:1:53:0:0:0:5:0
+; XGID=aa-Ba-D-B-ABcA---bcd-A--B-:0:0:-1:33:0:0:0:5:0
+; XGID=aa-Ba-D-B-ABcA---bcd-A--B-:0:0:1:65:0:0:0:5:0
+; XGID=aa-BaBD-B--AcA---bcd-A--B-:0:0:-1:41:0:0:0:5:0
+; XGID=-a-BbBD-B--Aba---bcd-A--BA:0:0:1:61:0:0:0:5:0
+; XGID=-a-BbCD-B---ba---bcd-A--C-:0:0:-1:22:0:0:0:5:0
+; XGID=-a-BbCD-B---ba---babbb--CA:0:0:1:32:0:0:0:5:0
+; XGID=-a-BbCD-B---ba---babbbB-B-:0:1:-1:D:0:0:0:5:0
+; XGID=-a-BbCD-B---ba---babbbB-B-:1:1:1:00:0:0:0:5:0
+; XGID=-a-BbCD-B---ba---babbbB-B-:1:1:-1:53:0:0:0:5:0
+; XGID=---BcCD-B---b----bbbbbB-B-:1:1:1:54:0:0:0:5:0
+; XGID=-B-BcBC-B---b----bbbbbB-B-:1:1:-1:61:0:0:0:5:0
+; XGID=-B-BbBC-B--ab----bbbbbB-B-:1:1:1:43:0:0:0:5:0
+; XGID=-C-BbBC-A--ab----bbbbbB-B-:1:1:-1:43:0:0:0:5:0
+; XGID=-C-B-BCaa--ab----bbbbbB-BA:1:1:1:62:0:0:0:5:0
+; XGID=-C-B-BCaa--ab---AbbbbbAAB-:1:1:-1:32:0:0:0:5:0
+; XGID=-C-B-BCaa---b---abbbbbAABA:1:1:1:51:0:0:0:5:0
+; XGID=-D-B-BBaa---b---abbbbbAAC-:1:1:-1:64:0:0:0:5:0
+; XGID=-D-B-BBaa---a---abbbbbaACA:1:1:1:64:0:0:0:5:0
+; XGID=-D-B-BBaa---a---abbbbbaACA:1:1:-1:22:0:0:0:5:0
+; XGID=-D-B-BBaa---a---ababb-bbCB:1:1:1:56:0:0:0:5:0
+; XGID=-D-B-BBaa---a---ababb-bbCB:1:1:-1:41:0:0:0:5:0
+; XGID=-D-B-BBa----aa--ababb-bbCB:1:1:1:21:0:0:0:5:0
+; XGID=-D-B-BBa----aa--ababb-bbCB:1:1:-1:65:0:0:0:5:0
+; XGID=-D-B-BBa--------acacb-bbCB:1:1:1:36:0:0:0:5:0
+; XGID=-D-B-BBa--------acacb-bbCB:1:1:-1:42:0:0:0:5:0
+; XGID=-D-B-BBa--------ababbbbbCB:1:1:1:55:0:0:0:5:0
+; XGID=-D-B-BBa--------ababbbbbCB:1:1:-1:22:0:0:0:5:0
+; XGID=-D-B-BBa--------a--cccbbCB:1:1:1:54:0:0:0:5:0
+; XGID=-D-B-BBa--------a--cccbbCB:1:1:-1:61:0:0:0:5:0
+; XGID=-D-B-BB------a---a-cccbbCB:1:1:1:55:0:0:0:5:0
+; XGID=-D-B-BB------a---a-cccbbCB:1:1:-1:21:0:0:0:5:0
+; XGID=-D-B-BB------a-----cdcbbCB:1:1:1:24:0:0:0:5:0
+; XGID=-D-B-BB------a-----cdcbbCB:1:1:-1:65:0:0:0:5:0
+; XGID=-D-B-BB------------dccbbCB:1:1:1:53:0:0:0:5:0
+; XGID=-D-B-BB------------dccbbCB:1:1:-1:61:0:0:0:5:0
+; XGID=-D-B-BB------------bdcbbCB:1:1:1:54:0:0:0:5:0
+; XGID=-D-B-BB------------bdcbbCB:1:1:-1:54:0:0:0:5:0
+; XGID=-D-B-BB------------bcbbbCB:1:1:1:52:0:0:0:5:0
+; XGID=-D-B-BB------------bcbbbCB:1:1:-1:55:0:0:0:5:0
+; XGID=-D-B-BB------------b-bbbCB:1:1:1:31:0:0:0:5:0
+; XGID=-D-B-BB------------b-bbbDA:1:1:-1:64:0:0:0:5:0
+; XGID=-D-B-BB--------------bbcDA:1:1:1:63:0:0:0:5:0
+; XGID=-D-B-BB---------A----bbcD-:1:1:-1:31:0:0:0:5:0
+; XGID=-D-B-BB---------A----b-dD-:1:1:1:31:0:0:0:5:0
+; XGID=-D-B-BB-----A--------b-dD-:1:1:-1:44:0:0:0:5:0
+; XGID=-D-B-BB-----A----------bD-:1:1:1:32:0:0:0:5:0
+; XGID=-D-B-BB-----A------A---bC-:1:1:-1:21:0:0:0:5:0
+; XGID=-D-B-BB-----A------A---aC-:1:-1:1:D:0:0:0:5:0
+; XGID=-D-B-BB-----A------A---aC-:1:-1:-1:00:0:0:0:5:0
+; XGID=-D-B-BB-----A------A---aC-:1:-1:1:00:2:0:0:5:0
+; 

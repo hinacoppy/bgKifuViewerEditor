@@ -1,0 +1,43 @@
+3 point match
+
+ Game 1
+ Poem : 0                               hinacoppy : 0                           
+  1)                                    51: 24/23 13/8                          
+  2) 21: 13/11 6/5                      22: 24/20* 6/4(2)                       
+  3) 43: Bar/18                         52: 23/18 20/18                         
+  4) 53: 18/13 11/8                     61: 13/7 8/7                            
+  5) 52: 24/22 13/8                     11: 8/5 6/5                             
+  6) 43: 8/5 8/4                         Doubles => 2                           
+  7)  Drops                             
+                                         Wins 1 point                           
+
+ Game 2
+ Poem : 0                               hinacoppy : 1                           
+  1) 42: 8/4 6/4                        63: 24/18 13/10                         
+  2)  Doubles => 2                       Takes                                  
+  3) 65: 13/7* 6/1*                     44: Cannot Move                         
+  4) 32: 6/1                            41: Cannot Move                         
+  5) 65: 8/2 7/2                        65: Bar/20                              
+  6) 43: 13/9 8/5*                      64: Cannot Move                         
+  7) 62: 13/5                           61: Cannot Move                         
+  8) 64: 24/20 13/7                     53: Bar/22                              
+  9) 53: 24/21 20/15*                   66: Cannot Move                         
+  10) 51: 9/3*                          31: Bar/22*                             
+  11) 62: Bar/23 15/9                   12: Cannot Move                         
+  12) 51: 9/3*                          65: Cannot Move                         
+  13) 63: 13/4                          52: Cannot Move                         
+  14) 32: 6/4 6/3                       64: Bar/19                              
+  15) 44: 7/3 5/1(2)                    42: Cannot Move                         
+  16) 43: 23/16                         44: Cannot Move                         
+  17) 22: 16/14 4/2(2) 3/1              11: Cannot Move                         
+  18) 33: 21/15 14/8                    24: Cannot Move                         
+  19) 51: 15/9                          14: Cannot Move                         
+  20) 42: 9/7 8/4                       22: Cannot Move                         
+  21) 53: 7/2 4/1                       65: Bar/20 Bar/19                       
+  22) 11: 1/Off(4)                      42: 20/16 8/6                           
+  23) 31: 3/Off 1/Off                   52: 13/6                                
+  24) 55: 4/Off(2) 3/Off 2/Off          52: 19/14 8/6                           
+  25) 31: 2/Off 1/Off                   64:                                     
+
+       Wins 4 point                                                             
+
