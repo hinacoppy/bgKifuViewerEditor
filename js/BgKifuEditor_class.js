@@ -44,6 +44,7 @@ class BgKifuEditor {
     this.takebtn     = $("#takebtn");
     this.dropbtn     = $("#dropbtn");
     this.donebtn     = $("#donebtn");
+    this.dicebtn     = $("#dicebtn");
     this.undobtn     = $("#undobtn");
     this.forcedbtn   = $("#forcedbtn");
     this.dancebtn    = $("#dancebtn");
@@ -179,6 +180,7 @@ class BgKifuEditor {
     //Editorモードのときだけのイベント
     this.undobtn.       on("click", (e) => { e.preventDefault(); this.undoAction(); });
     this.donebtn.       on("click", (e) => { e.preventDefault(); this.doneAction(); });
+    this.dicebtn.       on("click", (e) => { e.preventDefault(); this.reselectDiceAction(); });
     this.resignbtn.     on("click", (e) => { e.preventDefault(); this.resignAction(); });
     this.doublebtn.     on("click", (e) => { e.preventDefault(); this.doubleAction(); });
     this.takebtn.       on("click", (e) => { e.preventDefault(); this.takeAction(); });
@@ -202,6 +204,7 @@ class BgKifuEditor {
     //Viewerモードのときはこれらのイベントは無効にする
     this.undobtn.       off("click");
     this.donebtn.       off("click");
+    this.dicebtn.       off("click");
     this.resignbtn.     off("click");
     this.doublebtn.     off("click");
     this.takebtn.       off("click");
@@ -235,7 +238,7 @@ class BgKifuEditor {
     this.showPipInfo(this.xgid);
     this.unsetChequerDraggable();
     this.openingrollflag = true;
-    this.hideAllPanel();
+//    this.hideAllPanel();
     this.showRollDoublePanel(true, this.openingrollflag);
 //    if (!newmatch) { this.showActionStr(null, "<br><br>"); }
 //    this.showActionStr(null, "Opening roll");
@@ -252,7 +255,7 @@ class BgKifuEditor {
     this.xgid.dice = dice[2];
     this.xgid.usabledice = true;
     this.board.showBoard2(this.xgid);
-    this.hideAllPanel();
+//    this.hideAllPanel();
     this.showDoneUndoPanel();
 //    this.kifuobj.pushKifuXgid(this.xgid.xgidstr);　//棋譜を記録するのはアニメーションの前
     this.clearXgidPosition();
@@ -292,10 +295,20 @@ class BgKifuEditor {
     this.showPipInfo(this.xgid);
     this.board.showBoard2(this.xgid);
     this.unsetChequerDraggable();
-    this.hideAllPanel();
+//    this.hideAllPanel();
     this.showRollDoublePanel(this.player);
     this.allowillegal.prop("checked", false);
     this.strictflg = true;
+  }
+
+  reselectDiceAction() {
+    const xgidstr = this.popXgidPosition();
+    this.xgid = new Xgid(xgidstr);
+    this.xgid.dice = "00";
+    this.board.showBoard2(this.xgid);
+    this.unsetChequerDraggable();
+//    this.hideAllPanel();
+    this.showRollDoublePanel(this.player);
   }
 
   async doubleAction() {
@@ -307,7 +320,7 @@ console.log("doubleAction", this.xgid.xgidstr);
     this.board.showBoard2(this.xgid); //double offer
     const action = "Doubles => " + Math.pow(2, this.xgid.cube + 1);
     this.setGlobalKifuData(this.xgid, action, "double");
-    this.hideAllPanel();
+//    this.hideAllPanel();
     this.showTakeDropPanel();
 //    this.kifuobj.pushKifuXgid(this.xgid.xgidstr); //棋譜を記録するのはアニメーションの前
     this.swapXgTurn(); //XGのturnを変えるのは棋譜用XGID出力後
@@ -326,7 +339,7 @@ console.log("doubleAction", this.xgid.xgidstr);
     this.setGlobalKifuData(this.xgid, " Takes", "take");
     this.board.showBoard2(this.xgid);
     this.swapXgTurn(); //XGのturnを変えるのは棋譜用XGID出力後
-    this.hideAllPanel();
+//    this.hideAllPanel();
     this.showRollDoublePanel(this.player);
   }
 
@@ -338,7 +351,7 @@ console.log("doubleAction", this.xgid.xgidstr);
     this.board.showBoard2(this.xgid);
     this.setGlobalKifuData(this.xgid, " Drops", "drop");
 //    this.kifuobj.pushKifuXgid(this.xgid.xgidstr);
-    this.hideAllPanel();
+//    this.hideAllPanel();
     this.showGameEndPanel(this.player);
 //    this.gameFinished = true;
   }
@@ -352,7 +365,7 @@ console.log("doubleAction", this.xgid.xgidstr);
   }
 
   gameendAction() {
-    this.hideAllPanel();
+//    this.hideAllPanel();
     this.showScoreInfo();
     const action = "wins " + this.gameEndScore + " point";
     this.xgid.turn = BgUtil.cvtTurnGm2Xg(this.player); //this.player is winner
@@ -371,7 +384,7 @@ console.log("gameendAction", this.player, action, this.xgid.xgidstr);
     const beforeXgid = new Xgid(this.peepXgidPosition());
     this.setGlobalKifuData(beforeXgid, action, "roll");
 //    this.kifuobj.pushKifuXgid(this.xgid.xgidstr);
-    this.hideAllPanel();
+//    this.hideAllPanel();
     this.showGameEndPanel(this.player);
 //    this.gameFinished = true;
   }
@@ -432,7 +445,7 @@ console.log("newGameAction");
       this.showActionStr(this.player, "Rewind " + getDice(lastxgid));
       this.clearXgidPosition();
       this.pushXgidPosition(lastxgid); //rollActionした状態にしてundoActionに渡す
-      this.hideAllPanel();
+//      this.hideAllPanel();
       this.showDoneUndoPanel();
       this.undoAction();
     }
@@ -477,7 +490,7 @@ console.log("newGameAction");
         this.keyBuffer = ""; //それ以外のキーが押されたらバッファをクリア
       }
       break;
-    case "doneundo": //done undo時は、Enter, Space, Escを受け付ける
+    case "doneundo": //done undo時は、Enter, Space, Esc, r を受け付ける
       if (key == "Enter" || key == " ") {
         if (this.xgid.moveFinished()) { //押せるのはムーブ完了時のみ
           //known bug:forcedMoveの後はthis.xgid.moveFinished()がfalseを返すのでEnterが押せない。マウス操作で対応できるので放置
@@ -487,6 +500,8 @@ console.log("newGameAction");
         this.undoAction();
       } else if (this.forcedflg && key == "f") { //フォーストのときは f を受け付ける
         this.forcedMoveAction();
+      } else if (key == "r") { //r は出目の再選択
+        this.reselectDiceAction();
       }
       break;
     case "takedrop": //take dropは、t p を受け付ける
@@ -502,7 +517,7 @@ console.log("newGameAction");
   }
 
   resignAction() {
-    this.hideAllPanel();
+//    this.hideAllPanel();
     this.showResignPanel();
   }
 
@@ -516,13 +531,13 @@ console.log("newGameAction");
     const action = " Resign " + resign[this.gamescore[1]];
     this.setGlobalKifuData(this.xgid, action, "resign");
 //    this.kifuobj.pushKifuXgid(this.xgid.xgidstr);
-    this.hideAllPanel();
+//    this.hideAllPanel();
     this.showGameEndPanel(this.player);
 //    this.gameFinished = true;
   }
 
   resignCancelAction() {
-    this.hideAllPanel();
+//    this.hideAllPanel();
     this.showRollDoublePanel(this.player);
   }
 
@@ -568,7 +583,7 @@ console.log("newGameAction");
     this.gamescore = this.xgid.get_gamesc( BgUtil.cvtTurnGm2Xg(player) );
     const w = BgUtil.cvtTurnGm2Bd( player);
     const l = BgUtil.cvtTurnGm2Bd(!player);
-    this.gamescore[1] = resignflag ? resignscore : this.gamescore[1];
+    this.gamescore[1] = (resignflag && resignscore != 0) ? resignscore : this.gamescore[1];
     const scr = this.gamescore[0] * this.gamescore[1];
 console.log("calcScore before", this.score);
 console.log("calcScore", player, resignflag, this.gamescore[0], this.gamescore[1], resignscore, w, l, scr);
@@ -586,11 +601,13 @@ console.log("calcScore after", this.score, this.matchwinflg, this.gameEndScore);
   }
 
   showTakeDropPanel() {
+    this.hideAllPanel();
     this.showElement(this.takedrop);
     this.panelshowing = "takedrop";
   }
 
   showRollDoublePanel(player, openroll = false) {
+    this.hideAllPanel();
     this.doublebtn.toggle(!openroll).prop("disabled", !this.canDouble(player) );
     this.resignbtn.toggle(!openroll);
     this.openingroll.toggle(openroll);
@@ -611,6 +628,7 @@ console.log("calcScore after", this.score, this.matchwinflg, this.gameEndScore);
   }
 
   showDoneUndoPanel() {
+    this.hideAllPanel();
     this.donebtn.prop("disabled", (!this.xgid.moveFinished() && this.strictflg) );
     this.forcedflg = this.xgid.isForcedMove(); //rewindAction()時にも呼ばれるため、rollAction()ではなくここで確認
     this.forcedbtn.toggle(this.forcedflg).prop("disabled", this.xgid.moveFinished());
@@ -639,6 +657,7 @@ console.log("calcScore after", this.score, this.matchwinflg, this.gameEndScore);
   }
 
   showGameEndPanel(player) {
+    this.hideAllPanel();
     this.makeGameEndPanel(player);
 //    const btnmsg = this.matchwinflg ? "<i class='fas fa-check-circle'></i> Ok"
 //                                    : "<i class='fas fa-arrow-alt-circle-right'></i> Next";
@@ -648,6 +667,7 @@ console.log("calcScore after", this.score, this.matchwinflg, this.gameEndScore);
   }
 
   showResignPanel() {
+    this.hideAllPanel();
     this.showElement(this.resign);
   }
 
@@ -1068,7 +1088,7 @@ console.log("editCurrentPosition", xgid, this.xgid.turn, this.player);
       this.showPipInfo(this.xgid);
       this.board.showBoard2(this.xgid);
       this.unsetChequerDraggable();
-      this.hideAllPanel();
+//      this.hideAllPanel();
       const openingroll = (this.xgid.turn == 0);
       this.showRollDoublePanel(this.player, openingroll);
       break;
@@ -1078,11 +1098,11 @@ console.log("editCurrentPosition", xgid, this.xgid.turn, this.player);
       break;
     case "take":
     case "drop":
-      this.hideAllPanel();
+//      this.hideAllPanel();
       this.showTakeDropPanel();
       break;
     case "gameend":
-      this.hideAllPanel();
+//      this.hideAllPanel();
       this.showGameEndPanel();
       break;
     }

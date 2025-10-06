@@ -20,10 +20,14 @@ h1 img{
 a {
   text-decoration:none;
 }
-.aslink{
+.historylink{
   color:#00f;
   cursor:pointer;
   font-size:small;
+}
+.aslink{
+  color:#00f;
+  cursor:pointer;
 }
 </style>
 <title>BgKifuEditor help</title>
@@ -35,7 +39,7 @@ a {
 
 <p class="contents">
 バックギャモンの棋譜からゲームを再生したり、棋譜を入力、編集するためのアプリです。<br>
-以前に、棋譜からゲームを再生するアプリ、棋譜を最初から入力するアプリ、棋譜を編集するアプリ、の３つのアプリを提供していました。<br>
+以前は、棋譜からゲームを再生するアプリ、動画を見ながら棋譜を入力するアプリ、kifu.me が出力した棋譜を編集するアプリ、の３つのアプリを提供していました。<br>
 これらのアプリを一つに統合し、再生・入力・編集ができるアプリとして提供しています。<br><br>
 
 マウス操作ができるパソコンで稼働させてください。スマホやタブレットなどのタッチデバイスでも動きますが、正常に動かない可能性があります。<br>
@@ -47,6 +51,9 @@ a {
 ・棋譜ビューアとして：バックギャモンの棋譜ファイルを読み込ませ、ゲームの進行をアニメーションで表示できます。<br>
 ・棋譜入力アプリとして：ダイスの出目から、バックギャモンボードでの操作で棋譜入力ができます。<br>
 &emsp;&emsp;&emsp;→ビデオ等で撮影した動画から棋譜起こしをすることを想定したアプリです。<br>
+&emsp;&emsp;&emsp;→eXtreme Gammon 2 (XG) にも棋譜を入力する機能はありますが、棋譜入力に特化して、<br>
+&emsp;&emsp;&emsp;&emsp;かつ XG の棋譜入力機能より使いやすいツールとして提供することを目的として開発しています。<br>
+
 ・棋譜エディタとして：棋譜ファイルを読み込ませ、その棋譜の一部分を編集することができます。<br>
 &emsp;&emsp;&emsp;→kifu.me が出力したバックギャモンの棋譜ファイルを編集することを想定したアプリです。<br>
 </p>
@@ -69,6 +76,7 @@ a {
 ・[Game Info Panel] の <button><i class="fas fa-check"></i> Input New Game</button> を押下すると新規の棋譜入力ができるエディタモードになります。<br>
 &emsp;&emsp;→エディタモードでの操作方法は、下記の「◆エディタモードでの操作方法」を参照してください。<br>
 ・[<input type="checkbox" checked>New Match Flag] がチェックされているときは新規として、チェックされていないときは継続ゲームとして入力できます。<br>
+&emsp;&emsp;→次のゲームを入力するときは、[Game Info Panel] をもう一度開き、<button><i class="fas fa-check"></i> Input New Game</button> を押下してください。<br>
 </p>
 
 <h4>(3) 棋譜エディタとして使う</h4>
@@ -85,6 +93,7 @@ a {
 <p class="contents">
 ・<button><i class="fas fa-download"></i> Download Kifu</button>を押下すると編集後の棋譜をダウンロードできます。<br>
 &emsp;&emsp;→ダウンロードした棋譜ファイルはMAT形式のテキストファイルです。<br>
+&emsp;&emsp;→XG や gnubg などの解析ソフトで解析させることができます。<br>
 </p>
 
 <h4>(5) 補足</h4>
@@ -113,8 +122,9 @@ a {
 &emsp;&emsp;→ダイス部分の左クリックで<button><i class="fas fa-check-circle"></i> Done</button>と同じ機能が動きます。<br>
 ・<button><i class="fas fa-undo"></i> Undo</button>ボタンを押下するとチェッカー操作をやり直すことができます。<br>
 &emsp;&emsp;→ダイス部分の右クリックで<button><i class="fas fa-undo"></i> Undo</button>と同じ機能が動きます。<br>
-・<button><i class="fas fa-check-circle"></i> Done</button><button><i class="fas fa-undo"></i> Undo</button>の画面ではキーボードの Enter, Space と Esc を受付けます。<br>
-&emsp;&emsp;→ Enter, Space は<button><i class="fas fa-check-circle"></i> Done</button>の機能として、Esc は<button><i class="fas fa-undo"></i> Undo</button>の機能として動きます。<br>
+・<button><i class="fas fa-dice"></i></button>ボタンを押下すると出目を選び直すことができます。<br>
+・<button><i class="fas fa-check-circle"></i> Done</button><button><i class="fas fa-undo"></i> Undo</button><button><i class="fas fa-dice"></i></button>の画面ではキーボードの Enter, Space, Esc と r を受付けます。<br>
+&emsp;&emsp;→ Enter, Space は<button><i class="fas fa-check-circle"></i> Done</button>の機能として、Esc は<button><i class="fas fa-undo"></i> Undo</button>の機能として、r は<button><i class="fas fa-dice"></i></button>の機能として動きます。<br>
 ・<button><i class="fas fa-dragon"></i> Forced</button>が押せるときはキーボードの f を受付けます。<br>
 </p>
 
@@ -132,7 +142,8 @@ a {
 ・ダイス一覧画面の<button><i class="fas fa-flag"></i> Resign</button>を押下するとリザイン(負け宣言)です。<br>
 &emsp;&emsp;→本当にリザインするかどうかを<button><i class="fas fa-check-circle"></i> OK</button><button><i class="fas fa-times"></i> Cancel</button>で決定します。<br>
 &emsp;&emsp;→<button><i class="fas fa-check-circle"></i> OK</button>を押下するとゲーム終了です。<br>
-&emsp;&emsp;→リザイン時の得点は選択してください。<br>
+&emsp;&emsp;→リザイン時の得点は選択できます。<br>
+&emsp;&emsp;&emsp;→[<input type="radio" checked>Based on situation] を選ぶと、シングル、ギャモン、バックギャモンの判定を<span onclick="showResignRule();" class="aslink">単純なロジック</span>で計算します。<br>
 </p>
 
 <h4>(5) イリーガルムーブ</h4>
@@ -159,10 +170,10 @@ a {
 <h3>◆機能拡張履歴</h3>
 
 <p class="contents">
-(2019/08/09) 棋譜ビューアのリリース<br>
-(2023/05/18) 棋譜入力アプリの初版リリース&emsp;<span onclick="showEnhancement1();" class="aslink">履歴</span><br>
-(2025/05/22) 棋譜エディタのとりあえず版リリース&emsp;<span onclick="showEnhancement2();" class="aslink">履歴</span><br>
-(2025/10/01) 棋譜ビューア、棋譜入力アプリ、棋譜エディタを統合<br>
+(2019/08/xx) 棋譜ビューアのリリース<br>
+(2023/05/18) 棋譜入力アプリの初版リリース&emsp;<span onclick="showEnhancement1();" class="historylink">履歴</span><br>
+(2025/05/22) 棋譜エディタのとりあえず版リリース&emsp;<span onclick="showEnhancement2();" class="historylink">履歴</span><br>
+(2025/10/01) 棋譜ビューア、棋譜入力アプリ、棋譜エディタを統合&emsp;<span onclick="showEnhancement3();" class="historylink">履歴</span><br>
 </p>
 
 <h3>◆追加するかもしれない機能</h3>
@@ -219,6 +230,26 @@ function showEnhancement2() {
 (2025/06/17) 棋譜ビューアモードでチェッカーとキューブをアニメーションするように機能追加
 (2025/09/19) 棋譜行の追加・削除ができる機能を追加
 (2025/09/19) 行番号の表示を kifu.me に合わせるように修正`;
+
+  alert(msg);
+}
+function showEnhancement3() {
+  const msg = `\
+(2025/10/01) 棋譜ビューア、棋譜入力アプリ、棋譜エディタを統合
+(2025/10/03) コードリファクタリング
+(2025/10/03) ダイスの出目の選択を誤ったとき、入力し直せるようにした`;
+
+  alert(msg);
+}
+
+function showResignRule() {
+  const msg = `\
+リザイン時のスコア判定ロジック
+
+(1)一枚でも上がっていれば、シングル負け
+(2)コンタクトがあれば、バックギャモン負け
+(3)自駒が19ptよりも後ろにあれば、バックギャモン負け
+(4)それ以外は、ギャモン負け`;
 
   alert(msg);
 }
