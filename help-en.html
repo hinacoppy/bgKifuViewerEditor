@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="(C)hinacoppy 2019-2025">
+<link rel="icon" href="icon/favicon.ico">
+<link rel="apple-touch-icon" href="icon/apple-touch-icon.png">
+<style>
+body{
+  padding:10px;
+  background-color:#efe;
+}
+.contents{
+  padding-left:20px;
+}
+h1 img{
+  vertical-align:middle;
+  width:48px;
+}
+a {
+  text-decoration:none;
+}
+.historylink{
+  color:#00f;
+  cursor:pointer;
+  font-size:small;
+}
+.aslink{
+  color:#00f;
+  cursor:pointer;
+}
+</style>
+<title>BgKifuEditor help</title>
+</head>
+<body>
+<h1><img src="icon/apple-touch-icon.png"> Backgammon Kifu Viewer/Editor</h1>
+
+<h3>&diams; What is this app?</h3>
+
+<p class="contents">
+This app allows you to replay backgammon games from game records, and to input and edit game records.<br>
+Previously, I offered three separate apps: replaying games from game records, inputting game records while watching videos, and editing game records output by kifu.me.<br>
+I have now integrated these apps into a single application that allows for playback, input, and editing.<br><br>
+
+Please run this app on a computer with a mouse. It will also run on touch devices such as smartphones and tablets, but it may not function correctly.<br>
+</p>
+
+<h3>&diams; What can it do?</h3>
+
+<p class="contents">
+&bull; <strong>As a game record viewer:</strong> You can load backgammon game record files and watch the game played out step-by-step on the board.<br>
+&bull; <strong>As a game record input app:</strong> You can input game records based on dice rolls and operations on the backgammon board.<br>
+&emsp;&emsp;&emsp;&rarr; This app is intended for transcribing game records from videos, etc.<br>
+&emsp;&emsp;&emsp;&rarr; While eXtreme Gammon 2 (XG) also has a game record input function,<br>
+&emsp;&emsp;&emsp;&emsp; This app was developed with the aim of providing a tool that is specialized for game record input and easier to use than the XG's game record input function.<br>
+&bull; <strong>As a game record editor:</strong> You can load a game record file and edit a part of that game record.<br>
+&emsp;&emsp;&emsp;&rarr; This app is intended for editing backgammon game record (kifu) from the text files that kifu.me outputs. <br>
+</p>
+
+<h3>&diams; How do I use it?</h3>
+
+<h4>(1) Use as a game record viewer</h4>
+<p class="contents">
+&bull; You can load the game record file using  <button>Select File</button> in [Game Info Panel]. <br>
+&emsp;&emsp;&rarr; You can also drag and drop the game record file here.<br>
+&bull; <select><option>Game 1</option></select><button><i class="fas fa-share"></i></button> Select a game number to display the game record in the game record table.<br>
+&bull; Click a row in the game record table to display that position on the board.<br>
+&bull; <button><i class="fas fa-angle-left"></i><button><i class="fas fa-angle-right"></i></button> Move to the previous or next turn and display the position on the board.<br>
+&bull; <button><i class="fas fa-play-circle"></i></button> The game record will be automatically played back. Automatic playback stops when you perform any action.<br>
+&bull; <button><i class="fas fa-arrows-alt-h"></i> Flip Bearoff Side</button> Flip the board (left and right).<br>
+</p>
+
+<h4>(2) Use as a game record input app</h4>
+<p class="contents">
+&bull; Clicking <button><i class="fas fa-check"></i> Input New Game</button> in [Game Info Panel] will take you to editor mode, where you can enter a new game record.<br>
+&emsp;&emsp;&rarr; For instructions on how to use editor mode, please refer to "&diams; How to use editor mode" below.<br>
+&bull; [<input type="checkbox" checked>New Match Flag] is checked, you can enter it as a new match; when it is not checked, you can enter it as a continuing game.<br>
+&emsp;&emsp;&rarr; To enter the next game, open the [Game Info Panel] again, and please press <button><i class="fas fa-check"></i> Input New Game</button> button.<br>
+</p>
+
+<h4>(3) Use as a game record editor</h4>
+<p class="contents">
+
+&bull; <button>Select File</button> button in [Game Info Panel] loads the game record file output by kifu.me.<br>
+&bull; Clicking <button>Edit</button> button will switch to editor mode from that point in the game.<br>
+&bull; When you check [<input type="checkbox" checked>Toggle Insert/Delete Button], <button>Ins</button><button>Del</button> will be displayed.<br>
+&emsp;Clicking <button>Ins</button> button will add two lines of game record below it.<br>
+&emsp;Clicking <button>Del</button> button will delete the current line and the next line.<br>
+&emsp;&emsp;&rarr; Use this when kifu.me has either missed or entered too many turns.<br>
+</p>
+
+<h4>(4) Download game record</h4>
+<p class="contents">
+
+&bull; Clicking <button><i class="fas fa-download"></i> Download Kifu</button> button will download the edited game record.<br>
+&emsp;&emsp;&rarr; The downloaded game record file is a text file in MAT format.<br>
+&emsp;&emsp;&rarr; It can be analyzed using analysis software such as XG or gnubg.<br>
+</p>
+
+<h4>(5) Supplement</h4>
+<p class="contents">
+&bull; [Action Panel], [Navigation Panel], and [Game Info Panel] can be moved by dragging. Please move them to a location that is convenient for you.<br>
+</p>
+
+<h3>&diams; How to operate in editor mode</h3>
+
+<h4>(1) Preparation</h4>
+<p class="contents">
+&bull; Enter the player names, match points, event name, and event date in [Game Info Panel].<br>
+&emsp;&emsp;&rarr; This information will be saved as comments in the game record file.<br>
+&emsp;&emsp;&rarr; Setting the number of match points to 0 will result in an Unlimited game.<br>
+&emsp;&emsp;&rarr; When game record data is loaded, the information written in the game record data will be transferred.<br>
+</p>
+
+<h4>(2) Edit game records</h4>
+<p class="contents">
+&bull; A list of dice will be displayed, and you can select the outcome.<br>
+&emsp;&emsp;&rarr; In the opening roll, the color of the dice you select determines who goes first.<br>
+&emsp;&emsp;&rarr; This screen accepts keyboard input of 123456 and d.<br>
+&bull; You can move the checkers using the mouse.<br>
+&emsp;&emsp;&rarr; You can move checkers by dragging or by clicking.<br>
+&bull; Clicking <button><i class="fas fa-check-circle"></i> Done</button> button will end the checker operation.<br>
+&emsp;&emsp;&rarr; Left-click on the dice area, the same functionality of <button><i class="fas fa-check-circle"></i> Done</button>will work.<br>
+&bull; Clicking <button><i class="fas fa-undo"></i> Undo</button> button, you can undo the checker operation.<br>
+&emsp;&emsp;&rarr; Right-click on the dice area, the same functionality of <button><i class="fas fa-undo"></i> Undo</button> will work.<br>
+&bull; Clicking <button><i class="fas fa-dice"></i></button> button, you can change the dice outcome.<br>
+&bull; <button><i class="fas fa-check-circle"></i> Done</button><button><i class="fas fa-undo"></i> Undo</button><button><i class="fas fa-dice"></i></button> screen accepts the Enter, Space, Esc, and r keys on the keyboard.<br>
+</p>
+
+<h4>(3) Doubling operation</h4>
+<p class="contents">
+&bull; Clicking <button><i class="fas fa-dice-d6"></i> Double</button> button in Dice list screen, will result in a double proposal.<br>
+&bull;  The player receiving the double proposal presses one of <button><i class="fas fa-thumbs-up"></i> Take</button><button><i class="fas fa-thumbs-down"></i> Pass</button> buttons.<br>
+&emsp;&emsp;&rarr; <button><i class="fas fa-thumbs-up"></i> Take</button> continue entering the game record.<br>
+&emsp;&emsp;&rarr; <button><i class="fas fa-thumbs-down"></i> Pass</button> the game end screen will be displayed.<br>
+&emsp;&emsp;&rarr; <button><i class="fas fa-thumbs-up"></i> Take</button><button><i class="fas fa-thumbs-down"></i> Pass</button> screen accepts the 't' and 'p' keys on the keyboard.<br>
+</p>
+
+<h4>(4) Resign</h4>
+<p class="contents">
+&bull; Dice list screen, Clicking <button><i class="fas fa-flag"></i> Resign</button> button will resign (declare defeat).<br>
+&emsp;&emsp;&rarr; Do you really want to resign? <button><i class="fas fa-check-circle"></i> OK</button><button><i class="fas fa-times"></i> Cancel</button> That will be the decision.<br>
+&emsp;&emsp;&rarr; <button><i class="fas fa-check-circle"></i> OK</button> button will end the game.<br>
+&emsp;&emsp;&rarr; You can choose your score when resigning.<br>
+&emsp;&emsp;&emsp;&rarr; [<input type="radio" checked>Based on situation] will calculate the determination for singles, gammon, and backgammon using a <span onclick="showResignRule();" class="aslink">simple logic.</span><br>
+</p>
+
+<h4>(5) Illegal move</h4>
+<p class="contents">
+&bull; [<input type="checkbox" checked>Allow input of illegal moves] enables the input of illegal moves.<br>
+&emsp;&emsp;&rarr; You can move the checker to any points in front of the selected checker.<br>
+&emsp;&emsp;&rarr; In this state, you manipulate the checkers by dragging and dropping.<br>
+&bull; If you load game data containing illegal moves into XG, XG will reject it. So it is best to adjust the dice rolls or other methods to avoid illegal moves.<br>
+</p>
+
+<h4>(6) Correcting mistakes</h4>
+<p class="contents">
+&bull; If you notice an input error and want to correct it, go back to the game record table of the position you want to return to Press <button>Edit</button> button and re-enter the information from that point.<br>
+</p>
+
+<h3>&diams; Known issues</h3>
+
+<p class="contents">
+&bull; XGID position data is also output to the downloaded game record file. <br>
+&bull; Fixed a bug where the game record table would expand horizontally each time a game was selected or game record data was referenced, but it still sometimes behaves strangely. <br>
+&bull; When adding or deleting game record rows, the row numbers are recalculated.<br>
+</p>
+
+<h3>&diams; Feature expansion history</h3>
+
+<p class="contents">
+(2019/08/xx) Release of the game record viewer<br>
+(2023/05/18) Release of the game record input app<br>
+(2025/05/22) Release of the game record editor<br>
+(2025/10/01) Integration of the game record viewer, game record input app, and game record editor<br>
+</p>
+
+<h3>&diams; Possible additional features</h3>
+
+<p class="contents">
+&bull; I would like the line number to be retained when adding or deleting game record lines.<br>
+&bull; I welcome feature requests and suggestions.<br>
+</p>
+
+<h3>&diams; Thanks to ...</h3>
+
+<p class="contents">
+&bull; I developed a game record viewer from inspired by the BG Replay app, which replays game positions from game records.<br>
+&bull; I received tremendous support from Inu-san, othello-san, shira-san, and 85yago-san. in the development and expansion of the game record input app.<br>
+&bull; I developed a game record editor hoping to contribute to kifu.me the wonderful system.<br>
+</p>
+
+<h3>&diams; Other</h3>
+
+<p class="contents">
+It's working for now, but there are still plenty of bugs.<br>
+Please report any strange behaviors you encounter.<br><br>
+Contact: kawakami [at] js4.so-net.ne.jp<br>
+<br>
+&copy; hinacoppy 2025
+</p>
+
+<script src="/js/fontawesome-inuse.min.js"></script>
+<script>
+function showResignRule() {
+  const msg = `\
+Score determination logic at resignation:
+
+(1) If even one piece have been bearoff, it's a single loss.
+(2) If there is a contact, it's a backgammon loss.
+(3) If your piece is behind 19 points, it's a backgammon loss.
+(4) Otherwise, it's a gammon loss.`;
+
+  alert(msg);
+}
+</script>
+</body>
+</html>

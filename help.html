@@ -29,11 +29,17 @@ a {
   color:#00f;
   cursor:pointer;
 }
+.englishmanual{
+  position:absolute;
+  top:50px;
+  right:90px;
+}
 </style>
 <title>BgKifuEditor help</title>
 </head>
 <body>
 <h1><img src="icon/apple-touch-icon.png"> Backgammon Kifu Viewer/Editor</h1>
+<a href="help-en.html" class="englishmanual">English Manual</a>
 
 <h3>◆このアプリは何？</h3>
 
@@ -237,7 +243,8 @@ function showEnhancement3() {
   const msg = `\
 (2025/10/01) 棋譜ビューア、棋譜入力アプリ、棋譜エディタを統合
 (2025/10/03) コードリファクタリング
-(2025/10/03) ダイスの出目の選択を誤ったとき、入力し直せるようにした`;
+(2025/10/03) ダイスの出目の選択を誤ったとき、入力し直せるようにした
+(2025/10/15) 棋譜自動再生中は、自動的に次ゲームに進むようにした`;
 
   alert(msg);
 }
