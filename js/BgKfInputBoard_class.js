@@ -314,7 +314,7 @@ class BgBoard {
     const duration = (hitflag) ? delay/2 : delay;
     this.chequer[ckerowner][idx].point = toabs;
     this.chequer[ckerowner][idx].stackidx = num;
-    const promise = this.chequer[ckerowner][idx].dom.css({"z-index": 50 + num}).animate(toPosition, duration).promise();
+    const promise = p2move.dom.css({"z-index": 50 + num}).animate(toPosition, duration).promise();
     this.showStackInfo(sf, toabs, num, toPosition, ckerowner);
 
     return promise;
@@ -324,15 +324,15 @@ class BgBoard {
     const frabs = (player == 1) ? frpt : 25 - frpt;
     const ckerowner = (hitflag) ? BgUtil.getBdOppo(player) : player;
 
-    const frPtChkers = this.chequer[ckerowner].filter(elem => (elem.point == frabs)); //ポイントの駒を得る
+    const frPtChkers = this.chequer[ckerowner].filter(elem => (elem.point === frabs)); //ポイントの駒を得る
     const stackidxmax = Math.max(...frPtChkers.map(elem => elem.stackidx)); //一番上に積まれた駒番号を得て、
-    const p2move = frPtChkers.find(elem => (elem.stackidx == stackidxmax)); //その駒オブジェクトを返す
+    const p2move = frPtChkers.find(elem => (elem.stackidx === stackidxmax)); //その駒オブジェクトを返す
     return p2move;
   }
 
   countToPointChequer(player, toabs) {
     const ckerowner = (toabs == 0 || toabs == 25) ? BgUtil.getBdOppo(player) : player;
-    const toPtChkers = this.chequer[ckerowner].filter(elem => (elem.point == toabs)); //移動先の駒を数える
+    const toPtChkers = this.chequer[ckerowner].filter(elem => (elem.point === toabs)); //移動先の駒を数える
     return toPtChkers.length;
   }
 
@@ -499,21 +499,21 @@ class BgBoard {
   }
 
   getDragStartPoint(id, player) {
-    const chker = this.chequer[player].find(elem => elem.domid == id);
+    const chker = this.chequer[player].find(elem => elem.domid === id);
     const pt = chker.point;
     const p = (player == 1) ? pt : 25 - pt;
     return p;
   }
 
   getChequerOnDragging(pt, player) {
-    const aryreverse = this.chequer[player].reverse();
-    const chker = aryreverse.find(elem => elem.point == pt); //一番上の(最後の)チェッカーを返す
+    const aryreverse = [...this.chequer[player]].reverse(); // コピーして逆順化
+    const chker = aryreverse.find(elem => elem.point === pt); //一番上の(最後の)チェッカーを返す
     return chker;
   }
 
   getChequerHitted(ptt, player) {
     const pt = (player == 1) ? 25 - ptt : ptt;
-    const chker = this.chequer[player].find(elem => elem.point == pt);
+    const chker = this.chequer[player].find(elem => elem.point === pt);
     return chker;
   }
 
