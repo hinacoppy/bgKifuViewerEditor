@@ -75,6 +75,17 @@ input{
   --stack-font-size:calc(var(--stackFontSizeNum) * 1vmin);
 }
 
+/* バー・オフトレイ・ポイント三角形(盤面の固定部品)をまとめて描画するsvg。
+   .board(#board)の内側を隙間なく覆い、viewBoxは実ピクセル寸法に合わせてJS側(bgBoardConfig())で
+   毎回設定される(1viewBox単位=1px相当になるようpreserveAspectRatio="none"もJS側で指定済み) */
+.boardBase{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+}
+
 .info{
   display:table;
   width:var(--board-width);

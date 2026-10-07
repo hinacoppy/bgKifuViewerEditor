@@ -5,10 +5,12 @@ class BgBoard {
   constructor(boardid = "#board", bearoffside = false) {
     this.xgidstr = "XGID=--------------------------:0:0:0:00:0:0:0:0:0";
     this.leftrightFlag = bearoffside; //true: Left bearoff, false: Right bearoff
-    this.mainBoard = $(boardid); //need to define before bgBoardConfig()
+    this.mainBoard = document.querySelector(boardid); //need to define before bgBoardConfig()
     this.bgBoardConfig();
     this.prepareSvgDice();
-    this.setDomNameAndStyle();
+    this.prepareBoardBase(); //固定部品(bar, offtray, point triangle)をSVGで準備
+    this.updateBoardBase(); //座標を計算して反映(初期表示分)
+    this.prepareActiveObjects(); //アプリ内で使用する動的オブジェクトを準備
   } //end of constructor()
 
   prepareSvgDice() {
@@ -55,69 +57,87 @@ class BgBoard {
     this.svgDice[6] += '</svg>';
   }
 
-  setDomNameAndStyle() {
-    let xh;
+  prepareBoardBase() {
+    //盤面の固定部品(bar, offtray, point triangle)は、初期表示とredraw()の時にだけ座標が決まり、
+    //それ以外では動かないため、1つのSVG(boardBase)にまとめる。
+    //要素自体はredraw()でも作り直さず、座標(属性)だけを書き換える
+    //(作り直すとpointに貼ったクリック用イベントリスナーが失われるため)
+    const svgns = "http://www.w3.org/2000/svg";
+    this.boardBase = document.createElementNS(svgns, "svg");
+    this.boardBase.setAttribute("class", "boardBase");
+    this.boardBase.setAttribute("preserveAspectRatio", "none");
+    this.mainBoard.appendChild(this.boardBase);
 
     //bar
-    xh = '<div id="bar" class="bar"></div>';
-    this.mainBoard.append(xh);
-    $("#bar").css(this.getPosObj(this.pointX[0], 0));
+    this.bar = this.createSvgChild(svgns, "rect", "bar")
+    this.boardBase.appendChild(this.bar);
 
     //offtray
-    xh  = '<div id="offtray1" class="offtray"></div>';
-    xh += '<div id="offtray2" class="offtray"></div>';
-    this.mainBoard.append(xh);
-    this.offtray = [null, $('#offtray1'), $('#offtray2')];
-    $("#offtray1").css(this.getPosObj( 0 * this.pointWidth - this.offtrayMargin, 0));
-    $("#offtray2").css(this.getPosObj(14 * this.pointWidth, 0));
+    this.offtrayRect1 = this.createSvgChild(svgns, "rect", "offtray1");
+    this.offtrayRect2 = this.createSvgChild(svgns, "rect", "offtray2");
+    this.offtrayDiv1 = this.createSvgChild(svgns, "rect", "off1div");
+    this.offtrayDiv2 = this.createSvgChild(svgns, "rect", "off2div");
+    this.boardBase.appendChild(this.offtrayRect1);
+    this.boardBase.appendChild(this.offtrayRect2);
+    this.boardBase.appendChild(this.offtrayDiv1);
+    this.boardBase.appendChild(this.offtrayDiv2);
+    this.offtray = [null, this.offtrayRect1, this.offtrayRect2];
 
-    //point triangles
+    //point triangles: 偶数/奇数で色が決まる(上下半分での違いはなし)ため<g>でグループ化してfillをまとめる
     this.point = [];
-    const pointColorClass = ["pt_dnev", "pt_dnod", "pt_upev", "pt_upod"];
+    const gEvn = this.createSvgChild(svgns, "g");
+    gEvn.style.fill = "var(--triangle-evn)";
+    const gOdd = this.createSvgChild(svgns, "g");
+    gOdd.style.fill = "var(--triangle-odd)";
+    this.boardBase.appendChild(gEvn);
+    this.boardBase.appendChild(gOdd);
     for (let i = 1; i < 25; i++) {
-      const colfig = ((i>12) ? 1 : 0) * 2 + (i % 2); //0=under+even, 1=under+odd, 2=upper+even, 3=upper+odd
-      const xh = '<div id="pt' + i + '" class="point ' + pointColorClass[colfig] + '"></div>';
-      this.mainBoard.append(xh);
-      this.point[i] = $('#pt' + i);
-      const ey = (i > 12) ? 0 : this.mainBoardHeight - this.point[i].height();
-      this.point[i].css(this.getPosObj(this.pointX[i], ey));
+      const polygon = this.createSvgChild(svgns, "polygon", "pt" + i);
+      polygon.setAttribute("class", "point");
+      ((i % 2 === 0) ? gEvn : gOdd).appendChild(polygon);
+      this.point[i] = polygon;
     }
-    this.pointAll = $(".point");
+    this.pointAll = document.querySelectorAll(".point");
+  }
 
+  prepareActiveObjects() {
+    //アプリ内で使用する動的オブジェクトを準備
+    let xh;
     //label
     this.labels = [];
     for (let i = 1; i < 25; i++) {
       const xh = '<div id="lb' + i + '" class="label"></div>';
-      this.mainBoard.append(xh);
-      this.labels[i] = $('#lb'+i);
+      this.mainBoard.insertAdjacentHTML("beforeend", xh);
+      this.labels[i] = document.getElementById('lb'+i);
       const ey = (i > 12) ? this.upperlabelY : this.lowerlabelY;
-      this.labels[i].css(this.getPosObj(this.pointX[i], ey));
+      BgDomUtil.setPos(this.labels[i], this.getPosObj(this.pointX[i], ey));
     }
 
     //cube
     xh  = '<div id="cube" class="cube">64</div>';
-    this.mainBoard.append(xh);
-    this.cube = $('#cube');
-    this.cube.css(this.getPosObj(this.cubeX, this.cubeY[0]));
+    this.mainBoard.insertAdjacentHTML("beforeend", xh);
+    this.cube = document.getElementById('cube');
+    BgDomUtil.setPos(this.cube, this.getPosObj(this.cubeX, this.cubeY[0]));
 
     //dice
     xh  = '<div id="dice10" class="dice"></div>';
     xh += '<div id="dice11" class="dice"></div>';
     xh += '<div id="dice20" class="dice"></div>';
     xh += '<div id="dice21" class="dice"></div>';
-    this.mainBoard.append(xh);
-    this.dice = [[],[$('#dice10'),$('#dice11')],[$('#dice20'),$('#dice21')]];
-    this.dice[1][0].css(this.getPosObj(this.dice10X, this.diceY));
-    this.dice[1][1].css(this.getPosObj(this.dice11X, this.diceY));
-    this.dice[2][0].css(this.getPosObj(this.dice20X, this.diceY));
-    this.dice[2][1].css(this.getPosObj(this.dice21X, this.diceY));
+    this.mainBoard.insertAdjacentHTML("beforeend", xh);
+    this.dice = [[], [document.getElementById('dice10'), document.getElementById('dice11')],
+                     [document.getElementById('dice20'), document.getElementById('dice21')]];
+    BgDomUtil.setPos(this.dice[1][0], this.getPosObj(this.dice10X, this.diceY));
+    BgDomUtil.setPos(this.dice[1][1], this.getPosObj(this.dice11X, this.diceY));
+    BgDomUtil.setPos(this.dice[2][0], this.getPosObj(this.dice20X, this.diceY));
+    BgDomUtil.setPos(this.dice[2][1], this.getPosObj(this.dice21X, this.diceY));
 
     //stack counter
     this.stacks = [];
     for (let i = 0; i < 28; i++) {
       const xh = '<div id="st' + i + '" class="stack"></div>';
-      this.mainBoard.append(xh);
-      this.stacks[i] = $('#st' + i);
+      this.mainBoard.insertAdjacentHTML("beforeend", xh);
+      this.stacks[i] = document.getElementById('st' + i);
     }
 
     //Chequer
@@ -126,7 +146,7 @@ class BgBoard {
       for (let i = 0; i < 15; i++) {
         this.chequer[j][i] = new Chequer(j, i);
         const xh = this.chequer[j][i].domhtml;
-        this.mainBoard.append(xh);
+        this.mainBoard.insertAdjacentHTML("beforeend", xh);
         this.chequer[j][i].dom = true;
       }
     }
@@ -186,9 +206,11 @@ class BgBoard {
     const cubeval = BgUtil.calcCubeDisp(val, crawford, pos);
     const cubePosClass = ["cubepos0", "cubepos1", "cubepos2"];
     const cubePosJoin = cubePosClass.join(" ");
-    this.cube.text(cubeval).css(this.getPosObj(this.cubeX, this.cubeY[cubepos]))
-             .removeClass(cubePosJoin).addClass(cubePosClass[cubepos])
-             .toggleClass("cubeoffer", offer);
+    this.cube.textContent = cubeval;
+    BgDomUtil.setPos(this.cube, this.getPosObj(this.cubeX, this.cubeY[cubepos]));
+    BgDomUtil.removeClass(this.cube, cubePosJoin);
+    BgDomUtil.addClass(this.cube, cubePosClass[cubepos]);
+    this.cube.classList.toggle("cubeoffer", offer);
   }
 
   showDiceAll(turn, d1, d2) {
@@ -210,18 +232,20 @@ class BgBoard {
 
   showDice(turn, d0, d1) {
     const dicefaceClass = ["", "diceface1", "diceface2"];
-    this.dice[turn][0].html(this.svgDice[d0]);
-    this.dice[turn][1].html(this.svgDice[d1]);
-    this.dice[turn][0].children("svg").addClass(dicefaceClass[turn]);
-    this.dice[turn][1].children("svg").addClass(dicefaceClass[turn]);
-    (d0 == 0) ? this.dice[turn][0].hide() : this.dice[turn][0].show();
-    (d1 == 0) ? this.dice[turn][1].hide() : this.dice[turn][1].show();
+    this.dice[turn][0].innerHTML = this.svgDice[d0];
+    this.dice[turn][1].innerHTML = this.svgDice[d1];
+    const svg0 = this.dice[turn][0].querySelector("svg"); //d0が0のときはsvgDiceが空文字列のためsvgが存在しない
+    const svg1 = this.dice[turn][1].querySelector("svg");
+    if (svg0 && dicefaceClass[turn]) { svg0.classList.add(dicefaceClass[turn]); }
+    if (svg1 && dicefaceClass[turn]) { svg1.classList.add(dicefaceClass[turn]); }
+    (d0 == 0) ? BgDomUtil.hide(this.dice[turn][0]) : BgDomUtil.show(this.dice[turn][0]);
+    (d1 == 0) ? BgDomUtil.hide(this.dice[turn][1]) : BgDomUtil.show(this.dice[turn][1]);
   }
 
   showLabels(turn) {
     for (let i = 1; i < 25; i++) {
       let c = (turn == 0) ? "" : (turn == 1) ? i : 25 - i;
-      this.labels[i].text(c);
+      this.labels[i].textContent = c;
     }
   }
 
@@ -280,7 +304,10 @@ class BgBoard {
         const position = this.getPosObj(ex, ey);
         const zindex = 10 + ptStack[pt];
         this.chequer[player][i].stackidx = ptStack[pt];
-        this.chequer[player][i].dom.css(position).css("z-index", zindex).toggleClass("bearoff", bf);
+        const dom = this.chequer[player][i].dom;
+        BgDomUtil.setPos(dom, position);
+        dom.style.zIndex = zindex;
+        dom.classList.toggle("bearoff", bf);
         this.showStackInfo(sf, pt, st, position, player);
       }
     }
@@ -289,9 +316,12 @@ class BgBoard {
 
   showStackInfo(stackflag, pt, num, position, player) {
     const stackColorClass = ["", "stackcol1", "stackcol2"];
-    this.stacks[pt].text("").removeClass(stackColorClass.join(" "));
+    this.stacks[pt].textContent = "";
+    BgDomUtil.removeClass(this.stacks[pt], stackColorClass.join(" "));
     if (stackflag) {
-      this.stacks[pt].text(num).css(position).addClass(stackColorClass[player]);
+      this.stacks[pt].textContent = num;
+      BgDomUtil.setPos(this.stacks[pt], position);
+      BgDomUtil.addClass(this.stacks[pt], stackColorClass[player]);
     }
   }
 
@@ -314,7 +344,8 @@ class BgBoard {
     const duration = (hitflag) ? delay/2 : delay;
     this.chequer[ckerowner][idx].point = toabs;
     this.chequer[ckerowner][idx].stackidx = num;
-    const promise = p2move.dom.css({"z-index": 50 + num}).animate(toPosition, duration).promise();
+    p2move.dom.style.zIndex = 50 + num;
+    const promise = BgDomUtil.animatePos(p2move.dom, toPosition, duration);
     this.showStackInfo(sf, toabs, num, toPosition, ckerowner);
 
     return promise;
@@ -373,34 +404,32 @@ class BgBoard {
 
   animateDice(msec) {
     const diceanimclass = "faa-shake animated"; //ダイスを揺らすアニメーション
-    this.dice[1][0].addClass(diceanimclass);
-    this.dice[1][1].addClass(diceanimclass);
-    this.dice[2][0].addClass(diceanimclass); //見せないダイスも一緒に揺らす
-    this.dice[2][1].addClass(diceanimclass);
+    BgDomUtil.addClass(this.dice[1][0], diceanimclass);
+    BgDomUtil.addClass(this.dice[1][1], diceanimclass);
+    BgDomUtil.addClass(this.dice[2][0], diceanimclass); //見せないダイスも一緒に揺らす
+    BgDomUtil.addClass(this.dice[2][1], diceanimclass);
 
-    const defer = $.Deferred(); //deferオブジェクトからpromiseを作る
-    setTimeout(() => { //msec秒待ってアニメーションを止める
-      this.dice[1][0].removeClass(diceanimclass);
-      this.dice[1][1].removeClass(diceanimclass);
-      this.dice[2][0].removeClass(diceanimclass);
-      this.dice[2][1].removeClass(diceanimclass);
-      defer.resolve();
-    }, msec);
-
-    return defer.promise();
+    return new Promise((resolve) => {
+      setTimeout(() => { //msec秒待ってアニメーションを止める
+        BgDomUtil.removeClass(this.dice[1][0], diceanimclass);
+        BgDomUtil.removeClass(this.dice[1][1], diceanimclass);
+        BgDomUtil.removeClass(this.dice[2][0], diceanimclass);
+        BgDomUtil.removeClass(this.dice[2][1], diceanimclass);
+        resolve();
+      }, msec);
+    });
   }
 
   animateCube(msec) {
     const cubeanimclass = "faa-tada animated faa-fast"; //キューブオファーのアニメーション
-    this.cube.addClass(cubeanimclass);
+    BgDomUtil.addClass(this.cube, cubeanimclass);
 
-    const defer = $.Deferred(); //deferオブジェクトからpromiseを作る
-    setTimeout(() => { //msec秒待ってアニメーションを止める
-      this.cube.removeClass(cubeanimclass);
-      defer.resolve();
-    }, msec);
-
-    return defer.promise();
+    return new Promise((resolve) => {
+      setTimeout(() => { //msec秒待ってアニメーションを止める
+        BgDomUtil.removeClass(this.cube, cubeanimclass);
+        resolve();
+      }, msec);
+    });
   }
 
   bgBoardConfig() {
@@ -414,13 +443,17 @@ class BgBoard {
     const offtrayMarginNum = parseFloat(style.getPropertyValue('--offtrayMarginNum'));
 
     //ボード表示のための位置と大きさの定数を計算
-    this.mainBoardHeight = this.mainBoard.height();
-    this.mainBoardWidth = this.mainBoard.width();
+    this.mainBoardHeight = BgDomUtil.contentHeight(this.mainBoard); //.boardのborderを含まない内側のサイズ
+    this.mainBoardWidth = BgDomUtil.contentWidth(this.mainBoard);
 
     this.vw = this.mainBoardWidth / boardWidthNum;
     this.vh = this.mainBoardHeight / boardHeightNum;
 
     this.pointWidth = pointWidthNum * this.vw;
+    //bgStaticBoard.cssの--point-height(=boardHeightNum*unit/2.3)は、board-heightと同じunit(vminまたは
+    //メディアクエリ次第でvw)を使うため、比率は常にmainBoardHeightの1/2.3になる(--board-height-maxによる
+    //上限(*0.48)は1/2.3(≒0.435)より大きいため実際には効かない)
+    this.pointHeight = this.mainBoardHeight / 2.3;
     this.cubeSize = cubeSizeNum * this.vw;
     this.pieceWidth = this.pointWidth;
     const phr = this.mainBoardHeight / 13 / this.pieceWidth;
@@ -465,9 +498,54 @@ class BgBoard {
     this.upperlabelY = - frameSizeNum * this.vw;
     this.lowerlabelY = this.mainBoardHeight;
 
-    this.leftSideOff = 0 - this.offtrayMargin;
-    this.rightSideOff = this.mainBoardWidth - this.pieceWidth + this.offtrayMargin;
+    this.leftSideOff = 0 - this.offtrayMargin / 2;
+    this.rightSideOff = this.mainBoardWidth - this.pieceWidth + this.offtrayMargin / 2;
     this.pointX[26] = (this.leftrightFlag) ? this.leftSideOff : this.rightSideOff;
+  }
+
+  updateBoardBase() {
+    //盤面の固定部品(bar, offtray, point triangle)の座標計算
+    this.boardBase.setAttribute("viewBox", `0 0 ${this.mainBoardWidth} ${this.mainBoardHeight}`);
+
+    //bar
+    this.setSvgRect(this.bar, this.pointX[0], 0, this.pointWidth, this.mainBoardHeight, "var(--board-frame)");
+
+    //offtray
+    const offtrayWidth = Math.max(0, this.pointWidth - this.offtrayMargin); //負値にならないようMath.maxでガード
+    const off2startX = 14 * this.pointWidth + this.offtrayMargin;
+    this.setSvgRect(this.offtrayRect1, 0, 0, offtrayWidth, this.mainBoardHeight, "var(--offtray-color)");
+    this.setSvgRect(this.offtrayRect2, off2startX, 0, offtrayWidth, this.mainBoardHeight, "var(--offtray-color)");
+
+    //offtrayDivider offtray1の右に、offtray2の左にdividerを描画
+    this.setSvgRect(this.offtrayDiv1, this.pointWidth - this.offtrayMargin, 0, this.offtrayMargin, this.mainBoardHeight, "var(--board-frame)");
+    this.setSvgRect(this.offtrayDiv2, 14 * this.pointWidth, 0, this.offtrayMargin, this.mainBoardHeight, "var(--board-frame)");
+
+    //point triangle
+    for (let i = 1; i < 25; i++) {
+      const upper = (i > 12);
+      const x0 = this.pointX[i];
+      const x1 = this.pointX[i] + this.pointWidth;
+      const xm = this.pointX[i] + this.pointWidth / 2;
+      const pointheightnegative = this.mainBoardHeight - this.pointHeight;
+      //上半分は下向き(頂点がy=pointHeight)、下半分は上向き(頂点がy=mainBoardHeight-pointHeight)の三角形
+      const points = upper ? `${x0},0 ${x1},0 ${xm},${this.pointHeight}`
+                           : `${x0},${this.mainBoardHeight} ${x1},${this.mainBoardHeight} ${xm},${pointheightnegative}`;
+      this.point[i].setAttribute("points", points);
+    }
+  }
+
+  setSvgRect(rect, x, y, width, height, fill) {
+    rect.setAttribute("x", x);
+    rect.setAttribute("y", y);
+    rect.setAttribute("width", width);
+    rect.setAttribute("height", height);
+    rect.style.fill = fill;
+  }
+
+  createSvgChild(svgns, tagName, id) {
+    const el = document.createElementNS(svgns, tagName);
+    if (id) { el.setAttribute("id", id); }
+    return el;
   }
 
   getPosObj(x, y) {
@@ -521,42 +599,33 @@ class BgBoard {
     for (const dp of destpt) {
       if (dp == 0) {
         const sw = this.leftrightFlag ? 1 : 2;
-        this.offtray[sw].addClass("flash");
+        BgDomUtil.addClass(this.offtray[sw], "flash");
       } else {
-        this.point[dp].addClass("flash");
+        BgDomUtil.addClass(this.point[dp], "flash");
       }
     }
   }
 
   flashOffMovablePoint() {
-    this.pointAll.removeClass("flash");
-    this.offtray[1].removeClass("flash");
-    this.offtray[2].removeClass("flash");
+    this.pointAll.forEach((el) => BgDomUtil.removeClass(el, "flash"));
+    BgDomUtil.removeClass(this.offtray[1], "flash");
+    BgDomUtil.removeClass(this.offtray[2], "flash");
   }
 
   redraw() {
     this.bgBoardConfig();
 
-    //bar
-    $("#bar").css(this.getPosObj(this.pointX[0], 0));
-    //offtray
-    $("#offtray1").css(this.getPosObj( 0 * this.pointWidth - this.offtrayMargin, 0));
-    $("#offtray2").css(this.getPosObj(14 * this.pointWidth, 0));
-    //point triangles
-    for (let i = 1; i < 25; i++) {
-      const ey = (i > 12) ? 0 : this.mainBoardHeight - this.point[i].height();
-      this.point[i].css(this.getPosObj(this.pointX[i], ey));
-    }
+    this.updateBoardBase(); //バー・オフトレイ・ポイント三角形(固定部品)の座標を更新
     //label
     for (let i = 1; i < 25; i++) {
       const ey = (i > 12) ? this.upperlabelY : this.lowerlabelY;
-      this.labels[i].css(this.getPosObj(this.pointX[i], ey));
+      BgDomUtil.setPos(this.labels[i], this.getPosObj(this.pointX[i], ey));
     }
     //dice
-    this.dice[1][0].css(this.getPosObj(this.dice10X, this.diceY));
-    this.dice[1][1].css(this.getPosObj(this.dice11X, this.diceY));
-    this.dice[2][0].css(this.getPosObj(this.dice20X, this.diceY));
-    this.dice[2][1].css(this.getPosObj(this.dice21X, this.diceY));
+    BgDomUtil.setPos(this.dice[1][0], this.getPosObj(this.dice10X, this.diceY));
+    BgDomUtil.setPos(this.dice[1][1], this.getPosObj(this.dice11X, this.diceY));
+    BgDomUtil.setPos(this.dice[2][0], this.getPosObj(this.dice20X, this.diceY));
+    BgDomUtil.setPos(this.dice[2][1], this.getPosObj(this.dice21X, this.diceY));
 
     this.showBoard(this.xgidstr);
   }

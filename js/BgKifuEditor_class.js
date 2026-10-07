@@ -14,7 +14,7 @@ class BgKifuEditor {
     this.xgid = new Xgid(null);
     this.board = new BgBoard("#board", false);
     this.board.showBoard2(this.xgid);
-    this.kifuobj = new BgKifu(true);
+    this.kifuobj = new BgKifu(this, false);
     this.player = true; //true=player1, false=player2
     this.strictflg = true;
     this.animDelay = 500; //cube, dice
@@ -26,6 +26,7 @@ class BgKifuEditor {
     this.globalKifuData = [];
 
     this.setDomNames();
+    this.createEditorHandlers();
     this.prepareFloatWindows();
     this.prepareKifuTable();
     this.makeDicelistTable();
@@ -33,78 +34,106 @@ class BgKifuEditor {
     this.setDraggableEvent();
     this.hideAllPanel();
     this.checkGithub(); //GitHubに公開しているときに使えない機能は見せない
-    this.date.val(this.getToday());
+    this.date.value = this.getToday();
     this.loadKifuDataFromQuery(); //クエリに棋譜データが設定されていればそれを読む
   } //end of constructor()
 
   setDomNames() {
     //button
-    this.doublebtn   = $("#doublebtn");
-    this.resignbtn   = $("#resignbtn");
-    this.takebtn     = $("#takebtn");
-    this.dropbtn     = $("#dropbtn");
-    this.donebtn     = $("#donebtn");
-    this.dicebtn     = $("#dicebtn");
-    this.undobtn     = $("#undobtn");
-    this.forcedbtn   = $("#forcedbtn");
-    this.dancebtn    = $("#dancebtn");
-    this.resignokbtn = $("#resignokbtn");
-    this.resignclbtn = $("#resignclbtn");
-    this.gameendbtn  = $("#gameendbtn");
-    this.newgamebtn  = $("#newgamebtn");
-    this.rewindbtn   = $("#rewindbtn");
-    this.fliphorizbtn= $("#fliphorizbtn");
-    this.downloadbtn = $("#downloadbtn");
-    this.diceAsBtn   = $("#dice10,#dice11,#dice20,#dice21");
-    this.allowillegal= $("#allowillegal");
-    this.pointTriangle = $(".point");
-    this.analyseBtn  = $("#analyse");
+    this.doublebtn   = document.getElementById("doublebtn");
+    this.resignbtn   = document.getElementById("resignbtn");
+    this.takebtn     = document.getElementById("takebtn");
+    this.dropbtn     = document.getElementById("dropbtn");
+    this.donebtn     = document.getElementById("donebtn");
+    this.dicebtn     = document.getElementById("dicebtn");
+    this.undobtn     = document.getElementById("undobtn");
+    this.forcedbtn   = document.getElementById("forcedbtn");
+    this.dancebtn    = document.getElementById("dancebtn");
+    this.resignokbtn = document.getElementById("resignokbtn");
+    this.resignclbtn = document.getElementById("resignclbtn");
+    this.gameendbtn  = document.getElementById("gameendbtn");
+    this.newgamebtn  = document.getElementById("newgamebtn");
+//    this.rewindbtn   = document.getElementById("rewindbtn"); //現HTMLには存在しない(未使用のRewind機能の名残)。nullになるためイベント登録側でガードする
+    this.fliphorizbtn= document.getElementById("fliphorizbtn");
+    this.downloadbtn = document.getElementById("downloadbtn");
+    this.diceAsBtn   = document.querySelectorAll("#dice10,#dice11,#dice20,#dice21");
+    this.allowillegal= document.getElementById("allowillegal");
+    this.pointTriangle = document.querySelectorAll(".point");
+    this.analyseBtn  = document.getElementById("analyse");
 
     //infos
-    this.site       = $("#site");
-    this.date       = $("#date");
-    this.player1    = $("#player1");
-    this.player2    = $("#player2");
-    this.player1inp = $("#player1inp");
-    this.player2inp = $("#player2inp");
-    this.score1     = $("#score1");
-    this.score2     = $("#score2");
-    this.pip1       = $("#pip1");
-    this.pip2       = $("#pip2");
-    this.matchlen   = $("#matchlen");
-    this.matchlen1  = $("#matchlen1");
-    this.matchlen2  = $("#matchlen2");
-    this.actiondisp = $("#actiondisp");
-    this.openingroll= $("#openingroll");
-    this.newmatch   = $("#newmatch");
-    this.analysisDisp = $("#analysisresult");
+    this.site       = document.getElementById("site");
+    this.date       = document.getElementById("date");
+    this.player1    = document.getElementById("player1");
+    this.player2    = document.getElementById("player2");
+    this.player1inp = document.getElementById("player1inp");
+    this.player2inp = document.getElementById("player2inp");
+    this.score1     = document.getElementById("score1");
+    this.score2     = document.getElementById("score2");
+    this.pip1       = document.getElementById("pip1");
+    this.pip2       = document.getElementById("pip2");
+    this.matchlen   = document.getElementById("matchlen");
+    this.matchlen1  = document.getElementById("matchlen1");
+    this.matchlen2  = document.getElementById("matchlen2");
+    this.actiondisp = document.getElementById("actiondisp");
+    this.openingroll= document.getElementById("openingroll");
+    this.newmatch   = document.getElementById("newmatch");
+    this.analysisDisp = document.getElementById("analysisresult");
 
     //panel
-    this.panelholder = $("#panelholder");
-    this.allpanel    = $(".panel");
-    this.rolldouble  = $("#rolldouble");
-    this.doneundo    = $("#doneundo");
-    this.gameend     = $("#gameend");
-    this.takedrop    = $("#takedrop");
-    this.resign      = $("#resign");
+    this.panelholder = document.getElementById("panelholder");
+    this.allpanel    = document.querySelectorAll(".panel");
+    this.rolldouble  = document.getElementById("rolldouble");
+    this.doneundo    = document.getElementById("doneundo");
+    this.gameend     = document.getElementById("gameend");
+    this.takedrop    = document.getElementById("takedrop");
+    this.resign      = document.getElementById("resign");
 
     //kifu input
-    this.kifuTable      = $("#kifuTable");
-    this.inputKifuFile  = $("#inputKifuFile");
-    this.gameSelect     = $("#gameSelect");
-    this.fileName       = $("#fileName");
-    this.DnDArea        = $("#DnDArea");
-    this.prevPlayBtn    = $("#prevPlayBtn");
-    this.nextPlayBtn    = $("#nextPlayBtn");
-    this.autoPlayBtn    = $("#autoPlayBtn");
-    this.gameGoBtn      = $("#gameGoBtn");
-    this.showinsert     = $("#showinsert");
+    this.kifuTable      = document.getElementById("kifuTable"); //TableOperatorのコンストラクタに渡す生DOM要素
+    this.kifuTableOp    = null; //prepareKifuTable()でTableOperatorインスタンスをセットする
+    this.inputKifuFile  = document.getElementById("inputKifuFile");
+    this.gameSelect     = document.getElementById("gameSelect");
+    this.fileName       = document.getElementById("fileName");
+    this.DnDArea        = document.getElementById("DnDArea");
+    this.prevPlayBtn    = document.getElementById("prevPlayBtn");
+    this.nextPlayBtn    = document.getElementById("nextPlayBtn");
+    this.autoPlayBtn    = document.getElementById("autoPlayBtn");
+    this.gameGoBtn      = document.getElementById("gameGoBtn");
+    this.showinsert     = document.getElementById("showinsert");
 
     //chequer
-    this.chequerall  = $(".chequer");
+    this.chequerall  = document.querySelectorAll(".chequer");
     //pick dice
-    this.pickdice    = $(".pickdice");
-    this.pickdicetable = $("#pickdicetable");
+    this.pickdice    = document.querySelectorAll(".pickdice"); //makeDicelistTable()呼び出し前なのでこの時点では空
+    this.pickdicetable = document.getElementById("pickdicetable");
+  }
+
+  //Editorモード用イベントハンドラの実体をここで1回だけ作る(setEventHandlerForEditor/unsetEventHandlerForEditorで
+  //同じ関数参照を使い回さないとremoveEventListener()が効かないため)
+  createEditorHandlers() {
+    this.editorHandlers = {
+      undo:              (e) => { e.preventDefault(); this.undoAction(); },
+      done:              (e) => { e.preventDefault(); this.doneAction(); },
+      dice:              (e) => { e.preventDefault(); this.reselectDiceAction(); },
+      resign:            (e) => { e.preventDefault(); this.resignAction(); },
+      double:            (e) => { e.preventDefault(); this.doubleAction(); },
+      take:              (e) => { e.preventDefault(); this.takeAction(); },
+      drop:              (e) => { e.preventDefault(); this.dropAction(); },
+      dance:             (e) => { e.preventDefault(); this.danceAction(); },
+      gameend:           (e) => { e.preventDefault(); this.gameendAction(); },
+      diceAsClick:       (e) => { e.preventDefault(); this.doneAction(); },
+      diceAsContextmenu: (e) => { e.preventDefault(); this.undoAction(); },
+      rewind:            (e) => { e.preventDefault(); this.rewindAction(); },
+      matchlenChange:    (e) => { e.preventDefault(); this.changeMatchLengthAction(); },
+      pickdiceClick:     (e) => { e.preventDefault(); this.pickDiceAction(e.currentTarget.id.slice(-2)); },
+      pointMouseup:      (e) => { e.preventDefault(); this.pointClickAction(e); },
+      resignOk:          (e) => { e.preventDefault(); this.resignOkAction(); },
+      resignCancel:      (e) => { e.preventDefault(); this.resignCancelAction(); },
+      forced:            (e) => { e.preventDefault(); this.forcedMoveAction(); },
+      allowillegalChange:(e) => { e.preventDefault(); this.strictflg = !this.allowillegal.checked; },
+      documentKeydown:   (e) => { this.keyInputAction(e.key); },
+    };
   }
 
   prepareFloatWindows() {
@@ -164,71 +193,77 @@ class BgKifuEditor {
 
   setEventHandler() {
     //Viewer、Editor両方で有効なイベント
-    this.fliphorizbtn.  on("click", (e) => { e.preventDefault(); this.flipHorizOrientationAction(); });
-    this.downloadbtn.   on("click", (e) => { e.preventDefault(); this.downloadKifuAction(); });
-    $(window).          on("resize", (e) => { e.preventDefault(); this.board.redraw(true); });
-    $(document).        on("contextmenu", (e) => { e.preventDefault(); });
-    this.newgamebtn.    on("click", (e) => { e.preventDefault(); this.newGameAction(); });
-    this.player1inp.    on("change", (e) => { this.onchangeInfoAction(); });
-    this.player2inp.    on("change", (e) => { this.onchangeInfoAction(); });
-    this.matchlen.      on("change", (e) => { this.onchangeInfoAction(); });
+    this.fliphorizbtn.addEventListener("click", (e) => { e.preventDefault(); this.flipHorizOrientationAction(); });
+    this.downloadbtn. addEventListener("click", (e) => { e.preventDefault(); this.downloadKifuAction(); });
+    window.  addEventListener("resize", (e) => { e.preventDefault(); this.board.redraw(true); });
+    document.addEventListener("contextmenu", (e) => { e.preventDefault(); });
+    this.newgamebtn. addEventListener("click", (e) => { e.preventDefault(); this.newGameAction(); });
+    this.player1inp. addEventListener("change", (e) => { this.onchangeInfoAction(); });
+    this.player2inp. addEventListener("change", (e) => { this.onchangeInfoAction(); });
+    this.matchlen.   addEventListener("change", (e) => { this.onchangeInfoAction(); });
 
     this.setEventHandlerForKifuViewer();
   }
 
   setEventHandlerForEditor() {
     //Editorモードのときだけのイベント
-    this.undobtn.       on("click", (e) => { e.preventDefault(); this.undoAction(); });
-    this.donebtn.       on("click", (e) => { e.preventDefault(); this.doneAction(); });
-    this.dicebtn.       on("click", (e) => { e.preventDefault(); this.reselectDiceAction(); });
-    this.resignbtn.     on("click", (e) => { e.preventDefault(); this.resignAction(); });
-    this.doublebtn.     on("click", (e) => { e.preventDefault(); this.doubleAction(); });
-    this.takebtn.       on("click", (e) => { e.preventDefault(); this.takeAction(); });
-    this.dropbtn.       on("click", (e) => { e.preventDefault(); this.dropAction(); });
-    this.dancebtn.      on("click", (e) => { e.preventDefault(); this.danceAction(); });
-    this.gameendbtn.    on("click", (e) => { e.preventDefault(); this.gameendAction(); });
-    this.diceAsBtn.     on("click", (e) => { e.preventDefault(); this.doneAction(); });
-    this.diceAsBtn.     on("contextmenu",  (e) => { e.preventDefault(); this.undoAction(); });
-    this.rewindbtn.     on("click", (e) => { e.preventDefault(); this.rewindAction(); });
-    this.matchlen.      on("change", (e) => { e.preventDefault(); this.changeMatchLengthAction(); });
-    this.pickdice.      on("click", (e) => { e.preventDefault(); this.pickDiceAction(e.currentTarget.id.slice(-2)); });
-    this.pointTriangle. on("mouseup", (e) => { e.preventDefault(); this.pointClickAction(e); });
-    this.resignokbtn.   on("click", (e) => { e.preventDefault(); this.resignOkAction(); });
-    this.resignclbtn.   on("click", (e) => { e.preventDefault(); this.resignCancelAction(); });
-    this.forcedbtn.     on("click", (e) => { e.preventDefault(); this.forcedMoveAction(); });
-    this.allowillegal.  on("change", (e) => { e.preventDefault(); this.strictflg = !this.allowillegal.prop("checked"); });
-    $(document).        on("keydown", (e) => { this.keyInputAction(e.key); });
+    const h = this.editorHandlers;
+    this.undobtn.       addEventListener("click", h.undo);
+    this.donebtn.       addEventListener("click", h.done);
+    this.dicebtn.       addEventListener("click", h.dice);
+    this.resignbtn.     addEventListener("click", h.resign);
+    this.doublebtn.     addEventListener("click", h.double);
+    this.takebtn.       addEventListener("click", h.take);
+    this.dropbtn.       addEventListener("click", h.drop);
+    this.dancebtn.      addEventListener("click", h.dance);
+    this.gameendbtn.    addEventListener("click", h.gameend);
+    for (const el of this.diceAsBtn) {
+      el.addEventListener("click", h.diceAsClick);
+      el.addEventListener("contextmenu", h.diceAsContextmenu);
+    }
+//    if (this.rewindbtn) { this.rewindbtn.addEventListener("click", h.rewind); } //現HTMLには存在しないため念のためガード
+    this.matchlen.      addEventListener("change", h.matchlenChange);
+    for (const el of this.pickdice) { el.addEventListener("click", h.pickdiceClick); }
+    for (const el of this.pointTriangle) { el.addEventListener("mouseup", h.pointMouseup); }
+    this.resignokbtn.   addEventListener("click", h.resignOk);
+    this.resignclbtn.   addEventListener("click", h.resignCancel);
+    this.forcedbtn.     addEventListener("click", h.forced);
+    this.allowillegal.  addEventListener("change", h.allowillegalChange);
+    document.            addEventListener("keydown", h.documentKeydown);
   }
 
   unsetEventHandlerForEditor() {
     //Viewerモードのときはこれらのイベントは無効にする
-    this.undobtn.       off("click");
-    this.donebtn.       off("click");
-    this.dicebtn.       off("click");
-    this.resignbtn.     off("click");
-    this.doublebtn.     off("click");
-    this.takebtn.       off("click");
-    this.dropbtn.       off("click");
-    this.dancebtn.      off("click");
-    this.gameendbtn.    off("click");
-    this.diceAsBtn.     off("click");
-    this.diceAsBtn.     off("contextmenu");
-    this.rewindbtn.     off("click");
-    this.matchlen.      off("change");
-    this.pickdice.      off("click");
-    this.pointTriangle. off("mouseup");
-    this.resignokbtn.   off("click");
-    this.resignclbtn.   off("click");
-    this.forcedbtn.     off("click");
-    this.allowillegal.  off("change");
-    $(document).        off("keydown");
+    const h = this.editorHandlers;
+    this.undobtn.       removeEventListener("click", h.undo);
+    this.donebtn.       removeEventListener("click", h.done);
+    this.dicebtn.       removeEventListener("click", h.dice);
+    this.resignbtn.     removeEventListener("click", h.resign);
+    this.doublebtn.     removeEventListener("click", h.double);
+    this.takebtn.       removeEventListener("click", h.take);
+    this.dropbtn.       removeEventListener("click", h.drop);
+    this.dancebtn.      removeEventListener("click", h.dance);
+    this.gameendbtn.    removeEventListener("click", h.gameend);
+    for (const el of this.diceAsBtn) {
+      el.removeEventListener("click", h.diceAsClick);
+      el.removeEventListener("contextmenu", h.diceAsContextmenu);
+    }
+//    if (this.rewindbtn) { this.rewindbtn.removeEventListener("click", h.rewind); }
+    this.matchlen.      removeEventListener("change", h.matchlenChange);
+    for (const el of this.pickdice) { el.removeEventListener("click", h.pickdiceClick); }
+    for (const el of this.pointTriangle) { el.removeEventListener("mouseup", h.pointMouseup); }
+    this.resignokbtn.   removeEventListener("click", h.resignOk);
+    this.resignclbtn.   removeEventListener("click", h.resignCancel);
+    this.forcedbtn.     removeEventListener("click", h.forced);
+    this.allowillegal.  removeEventListener("change", h.allowillegalChange);
+    document.            removeEventListener("keydown", h.documentKeydown);
   }
 
   initGameOption() {
-    this.matchLength = this.matchlen.val();
+    this.matchLength = this.matchlen.value;
     this.score = [0,0,0];
-    this.score1.text(0);
-    this.score2.text(0);
+    this.score1.textContent = 0;
+    this.score2.textContent = 0;
   }
 
   beginNewGame(newmatch = false) {
@@ -271,9 +306,10 @@ class BgKifuEditor {
     this.xgid = new Xgid(xgidstr);
     this.xgid.usabledice = true;
     this.makeDiceList(this.xgid.dice);
-    this.donebtn.prop("disabled", (!this.xgid.moveFinished() && this.strictflg) );
+    this.donebtn.disabled = (!this.xgid.moveFinished() && this.strictflg);
     this.forcedflg = this.xgid.isForcedMove();
-    this.forcedbtn.toggle(this.forcedflg).prop("disabled", this.xgid.moveFinished());
+    BgDomUtil.toggle(this.forcedbtn, this.forcedflg);
+    this.forcedbtn.disabled = this.xgid.moveFinished();
     this.pushXgidPosition(this.xgid.xgidstr);
     this.board.showBoard2(this.xgid);
     this.setChequerDraggable(this.player);
@@ -297,7 +333,7 @@ class BgKifuEditor {
     this.unsetChequerDraggable();
 //    this.hideAllPanel();
     this.showRollDoublePanel(this.player);
-    this.allowillegal.prop("checked", false);
+    this.allowillegal.checked = false;
     this.strictflg = true;
   }
 
@@ -388,14 +424,14 @@ class BgKifuEditor {
   }
 
   newGameAction() {
-    const newmatchflag = this.newmatch.prop("checked");
+    const newmatchflag = this.newmatch.checked;
     const kifudatalength = this.globalKifuData.length;
     if (newmatchflag) {
       if (kifudatalength != 0) {
         if (!confirm("Really New Match?")) { return; }
       }
       this.initGameOption();
-      this.newmatch.prop("checked", false);
+      this.newmatch.checked = false;
     } else {
       if (kifudatalength == 0) {
         alert("You cannot begin without New match flag.");
@@ -405,7 +441,7 @@ class BgKifuEditor {
 
     this.beginNewGameEditor(newmatchflag);
 //    this.kifuobj.clearKifuXgid();
-//    this.actiondisp.html("");
+//    this.actiondisp.innerHTML = "";
 //    this.panelInfoWindow.min();
     this.beginNewGame(newmatchflag);
   }
@@ -539,43 +575,51 @@ class BgKifuEditor {
   }
 
   forcedMoveAction() {
-    this.donebtn.prop("disabled", false);
-    this.forcedbtn.prop("disabled", true);
+    this.donebtn.disabled = false;
+    this.forcedbtn.disabled = true;
     const afterxgidstr = this.xgid.getForcedMovedXgid();
     this.xgid = new Xgid(afterxgidstr);
     this.board.showBoard2(this.xgid);
   }
 
   changeMatchLengthAction() {
-    this.matchLength = this.matchlen.val();
+    this.matchLength = this.matchlen.value;
     const matchlenstr = this.matchLength == 0 ? "$" : this.matchLength;
-    this.matchlen1.text(matchlenstr);
-    this.matchlen2.text(matchlenstr);
+    this.matchlen1.textContent = matchlenstr;
+    this.matchlen2.textContent = matchlenstr;
     this.xgid.matchsc = this.matchLength;
   }
 
   showPipInfo(xgid) {
-    this.pip1.text(xgid.get_pip(+1));
-    this.pip2.text(xgid.get_pip(-1));
+    this.pip1.textContent = xgid.get_pip(+1);
+    this.pip2.textContent = xgid.get_pip(-1);
   }
 
   showScoreInfo() {
     const cfplayer = this.xgid.getCrawfordPlayer();
     const sc1 = this.xgid.sc_me + ((cfplayer == +1) ? "*" : "");
     const sc2 = this.xgid.sc_yu + ((cfplayer == -1) ? "*" : "");
-    this.score1.text(sc1);
-    this.score2.text(sc2);
+    this.score1.textContent = sc1;
+    this.score2.textContent = sc2;
+  }
+
+  showScoreInfo2(xgid) {
+    const cfplayer = xgid.getCrawfordPlayer();
+    const sc1 = xgid.sc_me + ((cfplayer == +1) ? "*" : "");
+    const sc2 = xgid.sc_yu + ((cfplayer == -1) ? "*" : "");
+    this.score1.textContent = sc1;
+    this.score2.textContent = sc2;
   }
 
   ZZZshowActionStr(obj0, obj1, obj2 = null) {
     const player = (obj0 === null) ? "" : (obj0 ? "<br>Bl " : "<br>Wh ");
     const action = (obj2 === null) ? obj1 : this.kifuobj.getActionStr(obj1, obj2);
-    this.actiondisp.append(player + action);
-    this.actiondisp[0].scrollTo(0, this.actiondisp[0].scrollHeight);
+    this.actiondisp.insertAdjacentHTML("beforeend", player + action);
+    this.actiondisp.scrollTo(0, this.actiondisp.scrollHeight);
   }
 
   calcScore(player, resignflag = false) {
-    const resignscore = Number($("input[name='resign']:checked").val());
+    const resignscore = Number(document.querySelector("input[name='resign']:checked").value);
     this.score = [0, this.xgid.sc_me, this.xgid.sc_yu]; //ここでセットしないとリザイン時のスコアがおかしくなる
     this.gamescore = this.xgid.get_gamesc( BgUtil.cvtTurnGm2Xg(player) );
     const w = BgUtil.cvtTurnGm2Bd( player);
@@ -602,20 +646,21 @@ class BgKifuEditor {
 
   showRollDoublePanel(player, openroll = false) {
     this.hideAllPanel();
-    this.doublebtn.toggle(!openroll).prop("disabled", !this.canDouble(player) );
-    this.resignbtn.toggle(!openroll);
-    this.openingroll.toggle(openroll);
+    BgDomUtil.toggle(this.doublebtn, !openroll);
+    this.doublebtn.disabled = !this.canDouble(player);
+    BgDomUtil.toggle(this.resignbtn, !openroll);
+    BgDomUtil.toggle(this.openingroll, openroll);
 
     const closeout = this.isCloseout(player);
-    this.pickdicetable.toggle(!closeout); //ダイス一覧かpassボタンのどちらかを表示
-    this.dancebtn.toggle(closeout);
+    BgDomUtil.toggle(this.pickdicetable, !closeout); //ダイス一覧かpassボタンのどちらかを表示
+    BgDomUtil.toggle(this.dancebtn, closeout);
 
     const col1 = openroll ? "blue"  : (player ? "blue" : "white");
     const col2 = openroll ? "white" : (player ? "blue" : "white");
     const col1bg = (col1 == "blue") ? "white" : "black";
     const col2bg = (col2 == "blue") ? "white" : "black";
-    $(".turn1").css("stroke", col1bg).css("fill", col1);
-    $(".turn2").css("stroke", col2bg).css("fill", col2);
+    document.querySelectorAll(".turn1").forEach((el) => { el.style.stroke = col1bg; el.style.fill = col1; });
+    document.querySelectorAll(".turn2").forEach((el) => { el.style.stroke = col2bg; el.style.fill = col2; });
     this.showElement(this.rolldouble);
     this.keyBuffer = "";
     this.panelshowing = "rolldouble";
@@ -623,31 +668,32 @@ class BgKifuEditor {
 
   showDoneUndoPanel() {
     this.hideAllPanel();
-    this.donebtn.prop("disabled", (!this.xgid.moveFinished() && this.strictflg) );
+    this.donebtn.disabled = (!this.xgid.moveFinished() && this.strictflg);
     this.forcedflg = this.xgid.isForcedMove(); //rewindAction()時にも呼ばれるため、rollAction()ではなくここで確認
-    this.forcedbtn.toggle(this.forcedflg).prop("disabled", this.xgid.moveFinished());
+    BgDomUtil.toggle(this.forcedbtn, this.forcedflg);
+    this.forcedbtn.disabled = this.xgid.moveFinished();
     this.showElement(this.doneundo);
     this.panelshowing = "doneundo";
   }
 
   makeGameEndPanel(player) {
-    //const playername = player ? this.player1.val() : this.player2.val();
+    //const playername = player ? this.player1.value : this.player2.value;
     const playername = player ? this.playername[1] : this.playername[2];
     const mes1 = playername + " WIN" + ((this.matchwinflg) ? "<br>and the MATCH" : "");
     const mes1dash = "You WIN" + ((this.matchwinflg) ? " and the MATCH" : "");
 //    this.showActionStr(player, mes1dash);
-    this.gameend.children(".mes1").html(mes1);
+    this.gameend.querySelector(".mes1").innerHTML = mes1;
 
     const winlevel = ["", "SINGLE", "GAMMON", "BACK GAMMON"];
     const res = winlevel[this.gamescore[1]];
     const mes2 = "Get " + this.gamescore[0] * this.gamescore[1] + "pt (" + res + ")";
 //    this.showActionStr(player, mes2);
-    this.gameend.children(".mes2").text(mes2);
+    this.gameend.querySelector(".mes2").textContent = mes2;
 
     const matchlengthinfo = this.matchLength == 0 ? "unlimited game" : this.matchLength + "pt";
     const mes3 = this.score[1] + " - " + this.score[2] + " (" + matchlengthinfo + ")";
 //    this.showActionStr(player, mes3);
-    this.gameend.children(".mes3").html(mes3);
+    this.gameend.querySelector(".mes3").innerHTML = mes3;
   }
 
   showGameEndPanel(player) {
@@ -656,7 +702,7 @@ class BgKifuEditor {
 //    const btnmsg = this.matchwinflg ? "<i class='fas fa-check-circle'></i> Ok"
 //                                    : "<i class='fas fa-arrow-alt-circle-right'></i> Next";
     const btnmsg = "<i class='fas fa-check-circle'></i> Ok";
-    this.gameendbtn.html(btnmsg);
+    this.gameendbtn.innerHTML = btnmsg;
     this.showElement(this.gameend);
   }
 
@@ -666,16 +712,17 @@ class BgKifuEditor {
   }
 
   hideAllPanel() {
-    this.allpanel.hide();
+    this.allpanel.forEach((el) => BgDomUtil.hide(el));
     this.panelActionWindow.max();
     this.panelshowing = "none";
   }
 
   showElement(elem) {
-    elem.show();
-    const width = elem.outerWidth(true);
-    const height = elem.outerHeight(true);
-    this.panelholder.css("width", width).css("height", height+35);
+    BgDomUtil.show(elem);
+    const width = BgDomUtil.outerWidth(elem, true);
+    const height = BgDomUtil.outerHeight(elem, true);
+    this.panelholder.style.width = width + "px";
+    this.panelholder.style.height = (height + 35) + "px";
   }
 
   pushXgidPosition(xgidstr) {
@@ -708,7 +755,7 @@ class BgKifuEditor {
   }
 
   setButtonEnabled(button, enable) {
-    button.prop("disabled", !enable);
+    button.disabled = !enable;
   }
 
   getToday(separator = true) {
@@ -813,7 +860,7 @@ class BgKifuEditor {
 
   dragStartAction(event, position) {
     this.mouseRbtnFlg = (event.button != 0); //主ボタン(左)のときだけfalse
-    this.dragObject = $(event.currentTarget); //dragStopAction()で使うがここで取り出しておかなければならない
+    this.dragObject = event.currentTarget; //dragStopAction()で使うがここで取り出しておかなければならない
     const id = event.currentTarget.id;
     this.dragStartPt = this.board.getDragStartPoint(id, BgUtil.cvtTurnGm2Bd(this.player));
     this.dragStartPos = position;
@@ -881,14 +928,14 @@ class BgKifuEditor {
       this.xgid = this.xgid.moveChequer2(movestr);
       this.board.showBoard2(this.xgid);
     } else {
-      this.dragObject.animate(this.dragStartPos, this.animDelay2);
+      BgDomUtil.animatePos(this.dragObject, this.dragStartPos, this.animDelay2);
     }
     this.setChequerDraggable(this.player);
-    this.donebtn.prop("disabled", (!this.xgid.moveFinished() && this.strictflg) );
+    this.donebtn.disabled = (!this.xgid.moveFinished() && this.strictflg);
   }
 
   unsetChequerDraggable() {
-    this.chequerall.removeClass("draggable");
+    this.chequerall.forEach((el) => el.classList.remove("draggable"));
   }
 
   setChequerDraggable(player) {
@@ -897,7 +944,7 @@ class BgKifuEditor {
     for (let i = 0; i < this.ckrnum; i++) {
       const pt = this.board.chequer[plyr][i].point;
       if (pt == this.param2 || pt == this.param3) { continue; }
-      this.board.chequer[plyr][i].dom.addClass("draggable");
+      this.board.chequer[plyr][i].dom.classList.add("draggable"); //.domはSVG化に伴い生DOM要素に変更済み
     }
   }
 
@@ -933,12 +980,12 @@ class BgKifuEditor {
   }
 
   moveCheckerAction(checker) {
-    const checkerdom = checker.dom;
+    const checkerdom = checker.dom; //.domはSVG化に伴い生DOM要素に変更済み(以前はjQueryオブジェクトで[0]で取り出していた)
     const position = { //dragStopAction()に渡すオブジェクトを作る
-            left: parseInt(checkerdom[0].style.left),
-            top:  parseInt(checkerdom[0].style.top)
+            left: parseInt(checkerdom.style.left),
+            top:  parseInt(checkerdom.style.top)
           };
-    this.dragObject = $(checker.id);
+    this.dragObject = checker.dom; //以前は$(checker.domid)で"#"が抜けており常に空のjQueryオブジェクトになっていた
     this.dragStartPt = this.board.getDragEndPoint(position, BgUtil.cvtTurnGm2Bd(this.player));
     this.dragStopAction(position);
   }
@@ -995,24 +1042,23 @@ class BgKifuEditor {
       }
       dicelist += "</tr>\n"
     }
-    this.pickdicetable.html(dicelist);
-    this.pickdice = $(".pickdice"); //ここで定義しないと有効にならない
+    this.pickdicetable.innerHTML = dicelist;
+    this.pickdice = document.querySelectorAll(".pickdice"); //ここで定義しないと有効にならない
   }
 
 
 //★★ここからKifuViewerのコード
   prepareKifuTable() {
-    const tableOptions = { //bootstrapTable config
-      url: null, //棋譜ファイルロード後に表示するため、作成時は空
-      columns: this.getKifuTableColumns(),
-      pagination: false,
-      sortable: false,
-      search: false,
+    const options = { //TableOperator config
       clickToSelect: true,
       singleSelect: true,
-      height: "200",
+      height: 200,
+      onRowSelect: (row) => { //テーブル行をクリック/チェックしたときにその手番の閲覧モードに切り替える
+        this.curRollNo = row.no - 1;
+        this.setIntoViewerMode();
+      },
     };
-    this.kifuTable.bootstrapTable(tableOptions);
+    this.kifuTableOp = new TableOperator(this.kifuTable, this.getKifuTableColumns(), options);
   }
 
   getKifuTableColumns() {
@@ -1028,6 +1074,19 @@ class BgKifuEditor {
       }
     };
 
+    //イリーガルムーブの行は赤、それ以降の局面が信頼できない行は黄色で表示する
+    //(共有のTableOperatorには行スタイル機能がないため、セルのformatterで実現)
+    const illegalFormatter = (value, row) => {
+      const text = value ?? "";
+      if (row.illegal) {
+        return '<div style="background-color:#fdd; color:#a00; font-weight:bold;">' + text + '</div>';
+      } else if (row.unreliable) {
+        return '<div style="background-color:#ffc; color:#860;">' + text + '</div>';
+      } else {
+        return text;
+      }
+    };
+
     const columns = [
       { field: "check",
         checkbox: true,
@@ -1038,15 +1097,19 @@ class BgKifuEditor {
       },
       { title: "No",
         field: "dispno",
+        formatter: illegalFormatter,
       },
       { title: "Player",
         field: "player",
+        formatter: illegalFormatter,
       },
       { title: "Dice",
         field: "dice",
+        formatter: illegalFormatter,
       },
       { title: "Action",
         field: "action",
+        formatter: illegalFormatter,
       },
       { title: "Edit",
         events: operateEvents,
@@ -1228,29 +1291,32 @@ class BgKifuEditor {
   updateKifuTable(playobj) {
     const dispdice = (playobj.dice == "00" || playobj.dice == "D") ? "" : playobj.dice;
     const dispplayer = (playobj.turn == 1) ? "BLUE" : "WHITE";
-    const player = { index: this.curRollNo, field: "player", value: dispplayer, };
-    const dice =   { index: this.curRollNo, field: "dice",   value: dispdice, };
-    const action = { index: this.curRollNo, field: "action", value: playobj.action, };
-    this.kifuTable.bootstrapTable("updateCell", player);
-    this.kifuTable.bootstrapTable("updateCell", dice);
-    this.kifuTable.bootstrapTable("updateCell", action);
+    const player     = { index: this.curRollNo, field: "player",     value: dispplayer, };
+    const dice       = { index: this.curRollNo, field: "dice",       value: dispdice, };
+    const action     = { index: this.curRollNo, field: "action",     value: playobj.action, };
+    const illegal    = { index: this.curRollNo, field: "illegal",    value: !!playobj.illegal };
+    const unreliable = { index: this.curRollNo, field: "unreliable", value: !!playobj.unreliable };
+    this.kifuTableOp.updateCell(player);
+    this.kifuTableOp.updateCell(dice);
+    this.kifuTableOp.updateCell(action);
+    this.kifuTableOp.updateCell(illegal); //編集で作り直した手はイリーガル表示を解除
+    this.kifuTableOp.updateCell(unreliable);
   }
 
   checkOnKifuRow(checkline) {
     const check = { index: checkline, field: "check", value: true, };
-    this.kifuTable.bootstrapTable("uncheckAll");
-    this.kifuTable.bootstrapTable("updateCell", check);
+    this.kifuTableOp.uncheckAll();
+    this.kifuTableOp.updateCell(check);
   }
 
   scrollTo(checkline) {
-    const scrollto = { unit: "rows", value: Math.max(checkline - 1, 0) };
-    this.kifuTable.bootstrapTable("scrollTo", scrollto); //行選択時に直感的な動きをしないので使いにくい
+    this.kifuTableOp.scrollTo(checkline); //チェック行が(stickyヘッダーに隠れず)可視領域に入るようスクロール
   }
 
   makeTableData() {
     const kfobject = this.parseGameKifu(); //棋譜表示テーブルに差し込むデータを作る
-    this.kifuTable.bootstrapTable("load", kfobject); //テーブルに差し込む
-    this.kifuTable.bootstrapTable("scrollTo", "bottom");
+    this.kifuTableOp.load(kfobject); //テーブルに差し込む
+    this.kifuTableOp.scrollTo(0);
   }
 
   calcDispNo(no, frp, poturn, action) {
@@ -1278,6 +1344,8 @@ class BgKifuEditor {
           //xgid: po.xgid,
           mode:   po.mode,
           gameno: go.game,
+          illegal: !!po.illegal, //イリーガルムーブ(棋譜テーブルで強調表示)
+          unreliable: !!po.unreliable, //イリーガルムーブより後の手(局面が信頼できない)
         };
         kifutableobject.push(kto);
         no += 1;
@@ -1287,60 +1355,52 @@ class BgKifuEditor {
   }
 
   setEventHandlerForKifuViewer() {
-    this.gameGoBtn.on("click", () => {
-      this.curGameNo = Number(this.gameSelect.val());
+    this.gameGoBtn.addEventListener("click", () => {
+      this.curGameNo = Number(this.gameSelect.value);
       this.initGame(this.curGameNo);
     });
-    this.kifuTable.on("uncheck.bs.table", (e, row, elem) => {
-      this.curRollNo = row.no -1;
-      this.setIntoViewerMode();
-    });
-    this.kifuTable.on("check.bs.table", (e, row, elem) => {
-      this.curRollNo = row.no -1;
-      this.setIntoViewerMode();
-    });
-    this.nextPlayBtn.on("click", () => {
+    this.nextPlayBtn.addEventListener("click", () => {
       const playbefore = this.curRollNo;
       this.curRollNo = this.calcCurrentRoll(+1);
       this.setIntoViewerMode();
       this.scrollTo(this.curRollNo);
       this.playMove2(playbefore); //ここではawaitできないのでラップする
     });
-    this.prevPlayBtn.on("click", () => {
+    this.prevPlayBtn.addEventListener("click", () => {
       this.curRollNo = this.calcCurrentRoll(-1);
+      this.setIntoViewerMode(); //テーブル再描画(チェック移動)を先に行い、その後でスクロールする
       this.scrollTo(this.curRollNo);
-      this.setIntoViewerMode();
     });
-    this.autoPlayBtn.on("click", () => {
+    this.autoPlayBtn.addEventListener("click", () => {
       this.toggleAutoplay();
     });
-    this.inputKifuFile.on("change", (e) => {
+    this.inputKifuFile.addEventListener("change", (e) => {
       this.loadLocalKifu(e);
-      this.inputKifuFile.val(""); //同じファイルを選択できるように
+      this.inputKifuFile.value = ""; //同じファイルを選択できるように
     });
-    this.DnDArea.on("dragover", (e) => {
+    this.DnDArea.addEventListener("dragover", (e) => {
       e.preventDefault();
-      this.DnDArea.addClass("DnDAreaDragOver");
+      this.DnDArea.classList.add("DnDAreaDragOver");
     });
-    this.DnDArea.on("dragleave", (e) => {
-      this.DnDArea.removeClass("DnDAreaDragOver");
+    this.DnDArea.addEventListener("dragleave", (e) => {
+      this.DnDArea.classList.remove("DnDAreaDragOver");
     });
-    this.DnDArea.on("drop", (e) => {
+    this.DnDArea.addEventListener("drop", (e) => {
       e.preventDefault();
-      this.DnDArea.removeClass("DnDAreaDragOver");
-      const files = e.originalEvent.dataTransfer.files;
+      this.DnDArea.classList.remove("DnDAreaDragOver");
+      const files = e.dataTransfer.files; //ネイティブイベントなのでoriginalEvent経由の取り出しは不要
       if (files.length > 0) {
-        this.inputKifuFile.prop("files", files);
-        this.inputKifuFile.trigger("change"); //ドロップしたらinputタグのchangeイベントを発火
+        this.inputKifuFile.files = files;
+        this.inputKifuFile.dispatchEvent(new Event("change", {bubbles: true})); //ドロップしたらinputタグのchangeイベントを発火
       }
     });
-    this.showinsert.on("change", (e) => {
+    this.showinsert.addEventListener("change", (e) => {
       const checkflag = e.target.checked;
       const showhide = checkflag ? "showColumn" : "hideColumn";
-      this.kifuTable.bootstrapTable(showhide, "insert"); //Insert列の表示/非表示を切り替える
+      this.kifuTableOp[showhide]("insert"); //Insert列の表示/非表示を切り替える
     });
 
-    this.analyseBtn.on('click', () => {
+    this.analyseBtn.addEventListener("click", () => {
       if (this.isGithub()) {
         alert('Sorry, this feature is inactive.'); //githubで稼働しているときはgnubgの解析機能は営業停止
         return;
@@ -1383,6 +1443,7 @@ class BgKifuEditor {
     const xgid = this.globalKifuData[gameno].playObject[rollno].xgid;
     this.xgid = new Xgid(xgid);
     this.showPipInfo(this.xgid);
+    this.showScoreInfo2(this.xgid);
     this.board.showBoard2(this.xgid);
   }
 
@@ -1418,7 +1479,7 @@ class BgKifuEditor {
   dispFileName(filename_enc) {
     const filename = decodeURI(filename_enc);
     const dispfile = (filename.length < 35) ? filename : BgUtil.insertStr(filename, 30, "<br>"); //長すぎるときは改行を入れる
-    this.fileName.html(dispfile);
+    this.fileName.innerHTML = dispfile;
   }
 
   readKifuFile(file) {
@@ -1433,6 +1494,7 @@ class BgKifuEditor {
   }
 
   parseKifuData(kifudata) {
+console.log("parseKifuData kifudata", kifudata);
     //棋譜データを解析し、ビューア画面に表示する
     const globalKifuDataAll = new BgKifuParser(kifudata); //棋譜ファイルを読んで棋譜データオブジェクト作成
     this.globalKifuData = globalKifuDataAll.globalKifuData; //棋譜データオブジェクトを展開
@@ -1444,29 +1506,53 @@ class BgKifuEditor {
     this.makeTableData(); //棋譜テーブル作成
     this.curGameNo = 0;
     this.initGame(this.curGameNo); //Game 1を表示
+    this.notifyIllegalMoves(globalKifuDataAll.illegalMoves, globalKifuDataAll.globalKifuData);
+  }
+
+  notifyIllegalMoves(illegalMoves, globalKifuData) {
+    //イリーガルムーブがあったことを1回だけ通知する。ゲームごとに最初のイリーガルムーブだけを列挙し、それ以降の手は件数で示す
+    if (!illegalMoves || illegalMoves.length == 0) { return; }
+    const playerName = [null, this.playername[1], this.playername[2]];
+    const firstByGame = new Map();
+    for (const im of illegalMoves) {
+      if (!firstByGame.has(im.game)) { firstByGame.set(im.game, { first: im, count: 0 }); }
+      firstByGame.get(im.game).count += 1;
+    }
+    let msg = "Illegal move(s) found in the kifu.\nIllegal moves are shown in red in the kifu table,\nand the following moves (whose board may be wrong) in yellow.\n\n";
+    for (const [game, g] of firstByGame) {
+      const im = g.first;
+      msg += `Game ${game}, No.${im.no}: ${im.dice}: ${im.action}  (${im.reason})`;
+      const unreliable = globalKifuData[game - 1].playObject.filter(po => po.unreliable).length;
+      const following = (g.count - 1) + unreliable; //同じゲームでこれ以降の、赤または黄色の手の数
+      msg += (following > 0) ? `  [+${following} following move(s) unreliable]\n` : "\n";
+    }
+    alert(msg);
   }
 
   setGameSelection(gameCount) {
-    this.gameSelect.children().remove();
+    this.gameSelect.innerHTML = "";
     for (let g = 0; g < gameCount; g++) { //機械用は0始まり
       const dispg = g + 1; //人間用は１始まりのリスト
-      this.gameSelect.append($('<option>').val(g).text("Game " + dispg));
+      const option = document.createElement("option");
+      option.value = g;
+      option.textContent = "Game " + dispg;
+      this.gameSelect.appendChild(option);
     }
   }
 
   initGame(gamenum) {
     this.curRollNo = 0;
-    this.kifuTable.bootstrapTable("filterBy", {gameno: [gamenum]}); //棋譜テーブルで見せるデータを入替え
+    this.kifuTableOp.filterBy({gameno: [gamenum]}); //棋譜テーブルで見せるデータを入替え
     //this.score = [null, this.globalKifuData[gamenum].score1, this.globalKifuData[gamenum].score2];
     this.setIntoViewerMode(); //ここでthis.xgidの設定とボード表示もやる
     this.dispGameInfo(); //ゲーム情報はthis.xgidの設定の後
   }
 
   dispGameInfo() {
-    this.player1.text(this.playername[1]);
-    this.player2.text(this.playername[2]);
-    this.matchlen1.text(this.matchLength);
-    this.matchlen2.text(this.matchLength);
+    this.player1.textContent = this.playername[1];
+    this.player2.textContent = this.playername[2];
+    this.matchlen1.textContent = this.matchLength;
+    this.matchlen2.textContent = this.matchLength;
     this.showScoreInfo();
   }
 
@@ -1497,13 +1583,13 @@ class BgKifuEditor {
 
   startAutoplay() {
     this.autoplay = true;
-    this.autoPlayBtn.html("<i class='fas fa-pause-circle fa-2x'></i>");
+    this.autoPlayBtn.innerHTML = "<i class='fas fa-pause-circle fa-2x'></i>";
     this.loopAutoplay();
   }
 
   stopAutoplay() {
     this.autoplay = false;
-    this.autoPlayBtn.html("<i class='fas fa-play-circle fa-2x'></i>");
+    this.autoPlayBtn.innerHTML = "<i class='fas fa-play-circle fa-2x'></i>";
   }
 
   async loopAutoplay() {
@@ -1532,8 +1618,8 @@ class BgKifuEditor {
       await BgUtil.sleep(this.animDelay * 4); //ゆっくり待つ
       this.curGameNo += 1;
       this.curRollNo = 0;
-      this.gameSelect.val(this.curGameNo); //現在ゲームを選択状態に
-      this.kifuTable.bootstrapTable("filterBy", {gameno: [this.curGameNo]}); //棋譜テーブルで見せるデータを入替え
+      this.gameSelect.value = this.curGameNo; //現在ゲームを選択状態に
+      this.kifuTableOp.filterBy({gameno: [this.curGameNo]}); //棋譜テーブルで見せるデータを入替え
       this.showBoard(this.curGameNo, this.curRollNo); //this.xgidをセット
       this.showScoreInfo();
     }
@@ -1580,7 +1666,7 @@ class BgKifuEditor {
 
   async loadKifuDataFromQuery() {
     // ページがロードされたときに、query情報があればFetchAPIで棋譜ファイルを取得する
-    const query = $(location).attr('search');
+    const query = location.search;
     if (query.startsWith('?s=')) {
       const filename = query.substr("?s=".length);
       const getfileurl = "./scripts/" + filename;
@@ -1602,7 +1688,7 @@ class BgKifuEditor {
   }
 
   async analyseByGnubg(xgid) {
-    this.analysisDisp.html('<i class="fas fa-spinner fa-pulse fa-3x" style="color:purple"></i>');
+    this.analysisDisp.innerHTML = '<i class="fas fa-spinner fa-pulse fa-3x" style="color:purple"></i>';
 
     const xg = new Xgid(xgid);
     const moveaction = (xg.dice != "00");
@@ -1625,7 +1711,7 @@ class BgKifuEditor {
     pre += separator;
     pre += analycube;
 
-    this.analysisDisp.text(pre);
+    this.analysisDisp.textContent = pre;
   }
 
   async fetchApiTextCommon(url) {
@@ -1644,19 +1730,19 @@ class BgKifuEditor {
   }
 
   isGithub() {
-    const hostname = $(location).attr('host');
+    const hostname = location.host;
     return BgUtil.isContain(hostname, "hinacoppy.github.io");
   }
 
   isHomePC() {
-    const hostname = $(location).attr('host');
+    const hostname = location.host;
     return BgUtil.isContain(hostname, "localhost");
   }
 
   checkGithub() {
     //GitHubで使わない機能は非表示
     if (this.isGithub()) {
-      $('.hidewhengithub').hide();
+      document.querySelectorAll('.hidewhengithub').forEach((el) => BgDomUtil.hide(el));
     }
   }
 
@@ -1668,8 +1754,8 @@ class BgKifuEditor {
     this.curRollNo = 0;
     if (newmatchflag) {
       this.globalKifuData = [];
-      this.inputKifuFile.val(""); //ファイル選択されていない状態にする
-      this.fileName.text("Select File");
+      this.inputKifuFile.value = ""; //ファイル選択されていない状態にする
+      this.fileName.textContent = "Select File";
       this.onchangeInfoAction();
     }
 
@@ -1685,25 +1771,25 @@ class BgKifuEditor {
     this.globalKifuData.push(gameObject);
 
     this.setGameSelection(this.curGameNo + 1); //selectタグデータ作成
-    this.gameSelect.val(this.curGameNo); //現在ゲームを選択状態に
+    this.gameSelect.value = this.curGameNo; //現在ゲームを選択状態に
 
     this.makeTableData(); //棋譜テーブル作成
-    this.kifuTable.bootstrapTable("filterBy", {gameno: [this.curGameNo]}); //棋譜テーブルで見せるデータを入替え
+    this.kifuTableOp.filterBy({gameno: [this.curGameNo]}); //棋譜テーブルで見せるデータを入替え
   }
 
   onchangeInfoAction() {
-    this.playername = [null, this.player1inp.val(), this.player2inp.val()];
-    this.matchLength = Number(this.matchlen.val());
-    const date = this.date.val();
+    this.playername = [null, this.player1inp.value, this.player2inp.value];
+    this.matchLength = Number(this.matchlen.value);
+    const date = this.date.value;
     const datetrim = date.split("-").join(""); //年月日のセパレータを取り除く
     this.kifuFileName = this.playername[1] + "-" + this.playername[2] + "-" + this.matchLength + "pt-" + datetrim + ".txt";
     this.dispGameInfo();
   }
 
   applyToInfoPanel() {
-    this.player1inp.val(this.playername[1]);
-    this.player2inp.val(this.playername[2]);
-    this.matchlen.val(this.matchLength);
+    this.player1inp.value = this.playername[1];
+    this.player2inp.value = this.playername[2];
+    this.matchlen.value = this.matchLength;
   }
 
 }

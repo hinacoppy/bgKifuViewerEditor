@@ -9,7 +9,14 @@ class BgKifuParser {
     this.crawford = false;
     this.cubeBefore = 1; // =2^0
     this.gameLines = [];
-    return this.parseKifuDataAll(gamesource); //棋譜データの解析結果オブジェクトを返す
+    this.illegalMoves = []; //イリーガルムーブの一覧(通知用)
+    this.lastIllegal = null; //nextXgid()の直近のmoveで検出したイリーガル理由
+    Xgid.suppressAlert = true; //パース中はXGID構文エラーのalertを抑止(まとめて通知するため)
+    try {
+      return this.parseKifuDataAll(gamesource); //棋譜データの解析結果オブジェクトを返す
+    } finally {
+      Xgid.suppressAlert = false;
+    }
   }
 
   parseKifuDataAll(gamesource) {
@@ -18,6 +25,7 @@ class BgKifuParser {
       gameCount: 0,
       playerName: [null, "bottom", "top"],
       globalKifuData: [],
+      illegalMoves: this.illegalMoves, //[{game, no, turn, dice, action, reason}] game/noは1始まり
     };
 
     let gamelineflag = false;
@@ -134,6 +142,7 @@ console.log("gameObj.length ", gameNo, gameObj.length);
 
     let bf = this.firstXgid();
     let playObject = []; //init _playObject
+    let drifted = false; //イリーガルムーブ検出後はtrue(局面が棋譜の実際の局面からずれている可能性がある)
 
     let i = 0;
     for (const k of plays) {
@@ -149,6 +158,11 @@ console.log("gameObj.length ", gameNo, gameObj.length);
         xg = this.nextXgid(bf, tn, mode, dc, "", 0); // ロール後(ムーブ前)のXGIDを計算する(解析(move action)に渡す用)
         af = this.nextXgid(bf, tn, "move", dc, ac, 0); // ムーブ後のXGIDを計算する(画面表示用)
         po = this.makePlayObj(gameno, tn, mode, dc, 0, ac, xg, af);
+        if (this.lastIllegal) { //イリーガルムーブ: ポジションは据え置き、フラグを立てて以降を継続
+          po.illegal = true;
+          const illegalObj = this.makeIllegalObj(gameno + 1, playObject.length + 1, tn, dc, ac, this.lastIllegal);
+          this.illegalMoves.push(illegalObj);
+        }
         break;
       case "DOUBLE":
         mode = "offer";
@@ -190,6 +204,11 @@ console.log("gameObj.length ", gameNo, gameObj.length);
       }
       if (ac != "") {
          bf = af; //change XGID for next turn
+         if (po.illegal) {
+           drifted = true;
+         } else if (drifted) {
+           po.unreliable = true; //イリーガルムーブより後の手は、局面が信頼できない
+         }
          playObject.push(po);
       }
       i++;
@@ -209,6 +228,18 @@ console.log("gameObj.length ", gameNo, gameObj.length);
       xgaf: xgaf,
     };
     return playobj;
+  }
+
+  makeIllegalObj(gameno, length, turn, dice, action, reason) {
+    const illegalObj = {
+      game: gameno ,
+      no: length,
+      turn: turn,
+      dice: dice,
+      action: action,
+      reason: reason,
+    };
+    return illegalObj;
   }
 
   chkAction(play) {
@@ -235,6 +266,7 @@ console.log("gameObj.length ", gameNo, gameObj.length);
 
   nextXgid(bf, tn, mode, dc, mv, cb, dropflag = false) {
     const xgid = new Xgid(bf);
+    this.lastIllegal = null;
     xgid.turn = BgUtil.cvtTurnBd2Xg(tn); //tn==1 -> xgid.turn = 1, tn==2 -> xgid.turn = -1
     switch (mode) {
     case "roll":
@@ -242,7 +274,9 @@ console.log("gameObj.length ", gameNo, gameObj.length);
       break;
     case "move":
       xgid.dice = dc;
-      xgid.position = xgid.getMovedPosition(xgid.position, mv, xgid.turn);
+      const moved = xgid.getMovedPositionChecked(xgid.position, mv, xgid.turn);
+      xgid.position = moved.position;
+      this.lastIllegal = moved.illegal;
       break;
     case "offer":
       xgid.dice = dc;
