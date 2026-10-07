@@ -88,6 +88,7 @@ a {
 <h4>(3) 棋譜エディタとして使う</h4>
 <p class="contents">
 ・[Game Info Panel] の <button>Select File</button> のボタンから kifu.me が出力した棋譜ファイルを読み込ませます。<br>
+&emsp;&emsp;→イリーガルムーブを含む棋譜データを読み込んだときはイリーガルムーブの行の色を変えて表示します。（赤＝イリーガル、黄＝信頼できない）<br>
 ・棋譜テーブルの<button>Edit</button>を押下するとその局面からのエディタモードになります。<br>
 ・[<input type="checkbox" checked>Toggle Insert/Delete Button] にチェックを入れると<button>Ins</button><button>Del</button>が表示されます。<br>
 &emsp;<button>Ins</button>を押下するとその下に2行の棋譜行が追加されます。<br>
@@ -169,7 +170,6 @@ a {
 
 <p class="contents">
 ・ダウンロードした棋譜ファイルにXGIDのポジションデータも出力される<br>
-・ゲーム選択、棋譜データ参照ごとに棋譜テーブルが横に広がっていくバグを修正したけど、まだ微妙な動きをすることがある<br>
 ・棋譜行を追加・削除した際に、行番号が再計算されてしまう<br>
 </p>
 
@@ -180,6 +180,7 @@ a {
 (2023/05/18) 棋譜入力アプリの初版リリース&emsp;<span onclick="showEnhancement1();" class="historylink">履歴</span><br>
 (2025/05/22) 棋譜エディタのとりあえず版リリース&emsp;<span onclick="showEnhancement2();" class="historylink">履歴</span><br>
 (2025/10/01) 棋譜ビューア、棋譜入力アプリ、棋譜エディタを統合&emsp;<span onclick="showEnhancement3();" class="historylink">履歴</span><br>
+(2026/10/05) イリーガルムーブを含む棋譜データを読み込めるようにした<br>
 </p>
 
 <h3>◆追加するかもしれない機能</h3>
@@ -244,7 +245,9 @@ function showEnhancement3() {
 (2025/10/01) 棋譜ビューア、棋譜入力アプリ、棋譜エディタを統合
 (2025/10/03) コードリファクタリング
 (2025/10/03) ダイスの出目の選択を誤ったとき、入力し直せるようにした
-(2025/10/15) 棋譜自動再生中は、自動的に次ゲームに進むようにした`;
+(2025/10/15) 棋譜自動再生中は、自動的に次ゲームに進むようにした
+(2026/09/04) 脱jQuery。 Pure JavaScriptのコードに書き直した
+(2026/09/04) 脱jQueryに伴い、棋譜テーブル表示機能を自作のものに置き換えた`;
 
   alert(msg);
 }
