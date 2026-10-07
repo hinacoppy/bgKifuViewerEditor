@@ -2,9 +2,10 @@
 'use strict';
 
 class BgKifu {
-  constructor(editorModeFlag = false) {
-//    this.editorModeFlag = editorModeFlag; //T=bgKifuEditor, F=bgKifuInputTool
-//    this.clearKifuXgid();
+  constructor(gameobj, appModeFlag = true) {
+    this.gameobj = gameobj;
+    this.appModeFlag = appModeFlag; //T=gammonAppWithAI, F=bgKifuViewerEditor
+    this.clearKifuXgid();
   }
 
   clearKifuXgid() {
@@ -34,16 +35,20 @@ class BgKifu {
     this.kifuDirtyFlg = false;
   }
 
-  downloadKifu(filename) {
+  makeDownloadFilename(filename) {
+    const gammonAppKifuFile = `kifu_${this.player1}_vs_${this.player2}_${this.date8}.txt`; //gammonAppWithAI用のファイル名
+    return (filename === null) ? gammonAppKifuFile : filename;
+  }
+
+  downloadKifu(filename = null) {
     const kifu = this.kifumat.join('\n') + '\n'; //最後に改行を入れる
     const xgidlist = "; " + this.xgidarray.join('\n; ') + '\n';
 //    const blob = new Blob([ kifu ], { "type":"text/plain" }); //production mode
     const blob = new Blob([ kifu, xgidlist ], { "type":"text/plain" }); //debug mode
     const downloadanchor = document.getElementById("downloadkifu");
-//    const filename2 = "kifu_" + this.player1 + "_" + this.player2 + "_" + this.date8 + ".txt";
-//    const filename = this.editorModeFlag ? filename1 : filename2;
+    const dlfilenam = this.makeDownloadFilename(filename);
     downloadanchor.href = window.URL.createObjectURL(blob);
-    downloadanchor.download = filename;
+    downloadanchor.download = dlfilenam;
     downloadanchor.click();
   }
 
@@ -404,44 +409,49 @@ class BgKifu {
   }
 
   makeHeader() {
-    //if (!this.editorModeFlag) {
-      // 棋譜エディタではヘッダ情報は記録しない
-      this.kifumat.push('; [Site "' + this.site + '"]');
-      this.kifumat.push('; [Match ID ""]');
-      this.kifumat.push('; [Player 1 "' + this.player1 + '"]');
-      this.kifumat.push('; [Player 2 "' + this.player2 + '"]');
-      this.kifumat.push('; [Player 1 Elo "1600.00/0"]');
-      this.kifumat.push('; [Player 2 Elo "1600.00/0"]');
-      this.kifumat.push('; [EventDate "' + this.date + '"]');
-      this.kifumat.push('; [EventTime "00:00"]');
-      this.kifumat.push('; [Variation "Backgammon"]');
-      this.kifumat.push('; [Unrated "Off"]');
-      this.kifumat.push('; [Crawford "On"]');
-      this.kifumat.push('; [CubeLimit "1024"]');
-      this.kifumat.push('');
-    //}
-    const matchlengthinfo = this.matchlen == 0 ? 'unlimited game' : this.matchlen + ' point match';
-    //★実際のunlimitedのMATファイルを確認すること★
+    this.kifumat.push('; [Site "' + this.site + '"]');
+    this.kifumat.push('; [Match ID ""]');
+    this.kifumat.push('; [Player 1 "' + this.player1 + '"]');
+    this.kifumat.push('; [Player 2 "' + this.player2 + '"]');
+    this.kifumat.push('; [Player 1 Elo "1600.00/0"]');
+    this.kifumat.push('; [Player 2 Elo "1600.00/0"]');
+    this.kifumat.push('; [EventDate "' + this.date + '"]');
+    this.kifumat.push('; [EventTime "00:00"]');
+    this.kifumat.push('; [Variation "Backgammon"]');
+    this.kifumat.push('; [Unrated "Off"]');
+    this.kifumat.push('; [Crawford "On"]');
+    this.kifumat.push('; [CubeLimit "1024"]');
+    this.kifumat.push('');
+    const matchlengthinfo = this.matchlen + ' point match';
     this.kifumat.push(matchlengthinfo);
     this.kifumat.push('');
   }
 
   setGameOption() {
-//   if (this.editorModeFlag) {
-//    this.site     = document.getElementById("site").value;
-//    this.date     = document.getElementById("date").value;
-//    this.player1  = document.getElementById("player1").textContent;
-//    this.player2  = document.getElementById("player2").textContent;
-//    this.matchlen = document.getElementById("matchlen1").textContent;
-//    this.date8    = this.date.replace(/\//g, ""); //2023/05/17 -> 20230517
-//   } else {
-    this.site     = document.getElementById("site").value;
-    this.date     = document.getElementById("date").value;
-    this.player1  = document.getElementById("player1inp").value;
-    this.player2  = document.getElementById("player2inp").value;
-    this.matchlen = document.getElementById("matchlen").value;
-    this.date8    = this.date.replace(/\//g, ""); //2023/05/17 -> 20230517
-//   }
+   if (this.appModeFlag) {
+      this.site     = "Backgammon vs AI";
+      this.date     = this.getToday();
+      this.player1  = "You";
+      this.player2  = this.gameobj.aiEngine;
+      this.matchlen = this.gameobj.matchLength;
+      this.date8    = this.date.replace(/\//g, ""); //2023/05/17 -> 20230517
+    } else {
+      this.site     = this.gameobj.site.value;
+      this.date     = this.gameobj.date.value;
+      this.player1  = this.gameobj.player1inp.value;
+      this.player2  = this.gameobj.player2inp.value;
+      this.matchlen = this.gameobj.matchlen.value;
+      this.date8    = this.date.replace(/\//g, ""); //2023/05/17 -> 20230517
+    }
+  }
+
+  getToday() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const day = ("0" + date.getDate()).slice(-2);
+    const datestr = year + "/" + month + "/" + day;
+    return datestr;
   }
 
   getActionStr(xgidbf, xgidaf) {
