@@ -2,7 +2,7 @@
 // (参考) https://developer.mozilla.org/ja/docs/Web/Progressive_web_apps/Offline_Service_workers
 'use strict';
 
-const cacheName = 'bgKifuViewerEditor-v20251001';
+const cacheName = 'bgKifuViewerEditor-v20261005';
 const ORIGIN = (location.hostname == 'localhost') ? '' : location.protocol + '//' + location.hostname;
 
 const contentToCache = [
@@ -17,7 +17,8 @@ const contentToCache = [
   ORIGIN + '/bgKifuViewerEditor/icon/android-chrome-512x512.png',
   ORIGIN + '/bgKifuViewerEditor/css/BgKifuEditor.css',
   ORIGIN + '/bgKifuViewerEditor/css/bootstrap.inuse.css',
-  ORIGIN + '/bgKifuViewerEditor/js/BgMoveStrUtil_class.js',
+  ORIGIN + '/bgKifuViewerEditor/js/BgDomUtil_class.js',
+  ORIGIN + '/bgKifuViewerEditor/js/BgSvgChequer_class.js',
   ORIGIN + '/bgKifuViewerEditor/js/BgKfInputBoard_class.js',
   ORIGIN + '/bgKifuViewerEditor/js/BgKifu_class.js',
   ORIGIN + '/bgKifuViewerEditor/js/BgKifuEditor_class.js',
@@ -26,10 +27,10 @@ const contentToCache = [
   ORIGIN + '/css/font-awesome-animation.min.css',
   ORIGIN + '/css/bgStaticBoard.css',
   ORIGIN + '/css/FloatWindow4.css',
+  ORIGIN + '/css/TableOperator.css',
   ORIGIN + '/js/fontawesome-inuse.min.js',
-  ORIGIN + '/js/jquery-3.7.1.min.js',
   ORIGIN + '/js/FloatWindow4.js',
-  ORIGIN + '/js/BgChequer_class.js',
+  ORIGIN + '/js/TableOperator_class.js',
   ORIGIN + '/js/BgXgid_class.js',
   ORIGIN + '/js/BgUtil_class.js'
 ];
